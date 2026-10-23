@@ -1,0 +1,11 @@
+# Donnees personnelles de l'outil (historique, file, reglages, cache du catalogue)
+data/
+
+# Faux exe generes a l'execution
+games/
+
+# Icone generee a la creation du raccourci
+app/QuestSpoofer.ico
+
+# Fichiers temporaires
+*.tmp
