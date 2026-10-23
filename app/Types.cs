@@ -247,6 +247,13 @@ public static class QsMem {
 // Fenetre : coins arrondis natifs de Windows 11, barre sombre, bordure discrete
 public static class QsWin {
     [DllImport("dwmapi.dll")] static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int value, int size);
+    [DllImport("shell32.dll")] static extern int SetCurrentProcessExplicitAppUserModelID([MarshalAs(UnmanagedType.LPWStr)] string id);
+    [DllImport("shell32.dll")] static extern int GetCurrentProcessExplicitAppUserModelID([MarshalAs(UnmanagedType.LPWStr)] out string id);
+
+    // Identite propre dans la barre des taches : sinon Windows regroupe la fenetre
+    // avec "Windows PowerShell" et affiche l'icone de PowerShell au lieu de la notre.
+    public static bool SetAppId(string id) { return SetCurrentProcessExplicitAppUserModelID(id) == 0; }
+    public static string GetAppId() { string id; return GetCurrentProcessExplicitAppUserModelID(out id) == 0 ? id : null; }
     public static void Style(IntPtr hwnd) {
         int dark = 1, round = 2, border = 0x00302A1A; // COLORREF = 0x00BBGGRR (#1A2A30)
         DwmSetWindowAttribute(hwnd, 20, ref dark, 4);   // DWMWA_USE_IMMERSIVE_DARK_MODE

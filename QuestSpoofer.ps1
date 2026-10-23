@@ -75,6 +75,9 @@ if (-not ('QsSession' -as [type])) {
         ([Windows.Interop.HwndSource].Assembly.Location), ([Windows.Threading.Dispatcher].Assembly.Location)
 }
 
+# Identite propre dans la barre des taches (avant toute fenetre), sinon icone de PowerShell
+[void][QsWin]::SetAppId('KDA-sparkle.QuestSpoofer')
+
 # --- Compiler une fois le faux exe ---
 $blank = Join-Path $gamesDir '_stub_v5.exe'
 if (-not (Test-Path -LiteralPath $blank)) {
@@ -158,8 +161,16 @@ function Format-Clock([TimeSpan]$t) {
 #  Zone de notification
 # ============================================================
 $appIcon = [QsIcon]::Create()
-$win.Icon = [Windows.Interop.Imaging]::CreateBitmapSourceFromHIcon($appIcon.Handle, [Windows.Int32Rect]::Empty,
-    [Windows.Media.Imaging.BitmapSizeOptions]::FromEmptyOptions())
+# Icone multi-tailles (16 a 256 px) : Windows choisit la bonne taille pour la barre des taches
+try {
+    [QsIcon]::SaveIco($IcoPath)
+    $icoDecoder = New-Object Windows.Media.Imaging.IconBitmapDecoder ([Uri]$IcoPath),
+        ([Windows.Media.Imaging.BitmapCreateOptions]::None), ([Windows.Media.Imaging.BitmapCacheOption]::OnLoad)
+    $win.Icon = $icoDecoder.Frames[0]
+} catch {
+    $win.Icon = [Windows.Interop.Imaging]::CreateBitmapSourceFromHIcon($appIcon.Handle, [Windows.Int32Rect]::Empty,
+        [Windows.Media.Imaging.BitmapSizeOptions]::FromEmptyOptions())
+}
 
 $script:tray = New-Object Windows.Forms.NotifyIcon
 $script:tray.Icon = $appIcon
