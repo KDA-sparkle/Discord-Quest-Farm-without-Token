@@ -225,11 +225,17 @@ public class QsRemote {
                 if (part.StartsWith("q=")) q = Uri.UnescapeDataString(part.Substring(2).Replace('+', ' '));
             var cat = Catalog;
             var res = new List<object>();
-            if (cat != null && q.Trim().Length > 0)
-                foreach (var g in QsCatalog.Filter(cat, q)) {
+            if (cat != null && q.Trim().Length > 0) {
+                // Les noms qui commencent par la recherche d'abord, puis les autres
+                var found = QsCatalog.Filter(cat, q);
+                string nq = QsCatalog.Normalize(q.Trim());
+                var first = found.FindAll(g => QsCatalog.Normalize(g.Name).StartsWith(nq));
+                first.AddRange(found.FindAll(g => !QsCatalog.Normalize(g.Name).StartsWith(nq)));
+                foreach (var g in first) {
                     res.Add(new { id = g.Id, name = g.Name, icon = g.IconUrl, ini = g.Initial, played = g.Played, isPlayed = g.IsPlayed });
                     if (res.Count >= 40) break;
                 }
+            }
             SendJson(ns, 200, json.Serialize(res));
             return;
         }

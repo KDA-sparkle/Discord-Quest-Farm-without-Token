@@ -71,7 +71,7 @@ $script:showEvt = [Threading.EventWaitHandle]::new($false, [Threading.EventReset
 if (-not $created) { [void]$script:showEvt.Set(); return }
 
 if (-not ('QsSession' -as [type])) {
-    Add-Type -Path (Join-Path $appDir 'Types.cs') -ReferencedAssemblies System.Drawing, System.Web.Extensions, System.Xaml,
+    Add-Type -Path (Join-Path $appDir 'Types.cs'), (Join-Path $appDir 'Remote.cs') -ReferencedAssemblies System.Drawing, System.Web.Extensions, System.Xaml,
         ([Windows.Interop.HwndSource].Assembly.Location), ([Windows.Threading.Dispatcher].Assembly.Location)
 }
 
@@ -266,6 +266,9 @@ if ($script:savedState) {
         if ([double]::TryParse([string]$st.widget.left, [ref]$wl) -and [double]::TryParse([string]$st.widget.top, [ref]$wt)) { $script:widgetPos = @($wl, $wt) }
     }
     if ($st.endAction) { $script:endT.Action = [string]$st.endAction }
+    $script:remoteOn = [bool]$st.remoteOn
+    if ($st.remotePin -match '^\d{6}$') { $script:remotePin = [string]$st.remotePin }
+    $script:remoteTokens = @($st.remoteTokens | Where-Object { $_ -match '^[0-9a-f]{32}$' })
 }
 
 function Save-State {
@@ -294,6 +297,9 @@ function Save-State {
         recents      = @($script:recents)
         lists        = $lists
         lang         = $script:lang
+        remoteOn     = [bool]$script:remoteOn
+        remotePin    = $script:remotePin
+        remoteTokens = @($script:remoteTokens)
     }
     try { Write-Json $obj $paths.State } catch {}
 }
@@ -477,6 +483,7 @@ function Set-Catalog($list) {
     }
     if ($script:questGame -and -not $script:qst.On) { $n = $script:byId[$script:questGame.Id]; if ($n) { $script:questGame = $n } }
     foreach ($id in @($script:history.Keys)) { Update-PlayedLabel $id }
+    $script:remote.Catalog = $list
     $StatGames.Text = '{0:N0}' -f $list.Count
     Stop-Spinner
     Update-Pill
@@ -1490,6 +1497,7 @@ function Update-SettingsUi {
         $BtnShortcut.Content = L 'Créer'
     }
     Update-WinMode
+    Update-RemoteUi
     Set-SegStyle $LangFr ($script:lang -eq 'fr')
     Set-SegStyle $LangEn ($script:lang -eq 'en')
     $when = if (Test-Path -LiteralPath $paths.Catalog) { '{0:dd/MM HH:mm}' -f (Get-Item -LiteralPath $paths.Catalog).LastWriteTime } else { 'jamais' }
@@ -1659,38 +1667,32 @@ $Active.AddHandler([Windows.Controls.Primitives.ButtonBase]::ClickEvent, [Window
     if ($s -is [QsSession]) { Stop-Session $s; Update-Ui; Set-Status "Arrêté · $($s.Name)" }
 })
 
-$BtnStopAll.Add_Click({
+# Actions partagees entre les boutons du PC et l'appli mobile
+function Stop-All {
     $n = $script:sessions.Count
     if ($script:rot.On) { Stop-Rotation }
     if ($script:qst.On) { Stop-Quest }
     foreach ($s in @($script:sessions)) { Stop-Session $s }
     Update-Ui
     Set-Status "$n session(s) arrêtée(s)"
-})
+}
 
-$QueueList.AddHandler([Windows.Controls.Primitives.ButtonBase]::ClickEvent, [Windows.RoutedEventHandler]{
-    param($src, $e)
-    $g = $e.OriginalSource.Tag
-    if ($g -is [QsGame]) { Remove-FromQueue $g }
-})
-
-$BtnRotate.Add_Click({
-    if ($script:rot.On) { Stop-Rotation; return }
+function Start-Rotation {
+    if ($script:rot.On) { return }
     if ($script:rotItems.Count -eq 0) { Set-Status 'La file de rotation est vide' 'warn'; return }
     $script:rot.On = $true
     $script:rot.Index = 0
     Step-Rotation
-})
-$BtnPause.Add_Click({ Switch-RotationPause })
-$BtnNext.Add_Click({
+}
+
+function Skip-RotationGame {
     if (-not $script:rot.On) { return }
     $script:rot.Index++
     Step-Rotation
-})
-$BtnLists.Add_Click({ Show-ListsMenu })
+}
 
 # 10 jeux "connus" (avec image de couverture), jamais joues, pas deja dans la file
-$BtnRandom.Add_Click({
+function Add-RandomGames {
     if (-not $script:allGames) { return }
     $pool = @($script:allGames.Where({ $_.HasCover -and -not $script:rotItems.Contains($_) -and -not (Test-Played $_.Id) }))
     if ($pool.Count -lt 10) { $pool = @($script:allGames.Where({ -not $script:rotItems.Contains($_) })) }
@@ -1699,15 +1701,213 @@ $BtnRandom.Add_Click({
     Update-Rot
     Save-State
     Set-Status "$($picked.Count) jeux ajoutés à la rotation" 'ok'
-})
+}
 
-$BtnClearQueue.Add_Click({
+function Clear-Queue {
     if ($script:rot.On) { Stop-Rotation }
     $script:rotItems.Clear()
     Update-Rot
     Save-State
     Set-Status 'File de rotation vidée'
+}
+
+# ============================================================
+#  Telephone : appli mobile sur le reseau local (app\mobile, servie par app\Remote.cs)
+#  Le serveur tourne sur son propre thread ; l'etat de l'outil n'est lu et modifie
+#  qu'ici, sur le thread de l'interface (etat publie + commandes en file).
+# ============================================================
+$RemotePort = 47820
+$script:remote = New-Object QsRemote
+$script:remote.WebRoot = Join-Path $appDir 'mobile'
+if (-not $script:remotePin) { $script:remotePin = [QsRemote]::NewPin() }
+if (-not $script:remoteTokens) { $script:remoteTokens = @() }
+
+function ConvertTo-RemoteGame($g) { [ordered]@{ id = $g.Id; name = $g.Name; icon = $g.IconUrl; ini = $g.Initial } }
+
+# Etat lu par le telephone (GET /api/state)
+function Publish-RemoteState {
+    if (-not $script:remote.IsRunning) { return }
+    $n = Get-PlayedCount
+    $next = $Tiers | Where-Object { $_[0] -gt $n } | Select-Object -First 1
+    $cur  = $Tiers | Where-Object { $_[0] -le $n } | Select-Object -Last 1
+    $rotOn = [bool]$script:rot.On
+    $q = $script:qst
+    $st = [ordered]@{
+        v        = 1
+        lang     = $script:lang
+        accent   = $script:accentHex
+        discord  = [bool]$script:discordUp
+        catalog  = $(if ($script:allGames) { $script:allGames.Count } else { 0 })
+        sessions = @(foreach ($s in $script:sessions) { [ordered]@{ pid = $s.Proc.Id; name = $s.Name; icon = $s.IconUrl; ini = $s.Initial; elapsed = $s.Elapsed; kind = [string]$s.Kind } })
+        rotation = [ordered]@{
+            on = $rotOn; paused = [bool]$script:rot.Paused; userPaused = [bool]$script:rot.UserPaused
+            index = [int]$script:rot.Index; count = $script:rotItems.Count; minutes = Get-RotMinutes
+            remaining = $(if ($rotOn) { [int](Get-RotRemaining).TotalSeconds } else { 0 })
+            total = $(if ($rotOn) { [int]($script:rot.Next - $script:rot.Started).TotalSeconds } else { 0 })
+            queue = @(foreach ($g in $script:rotItems) { ConvertTo-RemoteGame $g })
+        }
+        quest    = [ordered]@{
+            on = [bool]$q.On; paused = [bool]$q.Paused
+            name = $(if ($q.On) { $q.Game.Name } else { '' }); icon = $(if ($q.On) { $q.Game.IconUrl } else { $null }); ini = $(if ($q.On) { $q.Game.Initial } else { '' })
+            remaining = $(if ($q.On) { [int][Math]::Max(0, ($q.Next - (Get-QuestNow)).TotalSeconds) } else { 0 })
+            total = $(if ($q.On) { [int]($q.Next - $q.Started).TotalSeconds } else { 0 })
+        }
+        timer    = [ordered]@{
+            left = $(if ($script:endT.At) { [int][Math]::Max(0, ($script:endT.At - (Get-Date)).TotalSeconds) } else { $null })
+            onRotationEnd = [bool]$script:endT.OnRotationEnd; action = $script:endT.Action
+        }
+        stats    = [ordered]@{
+            unique = $n; goal = $(if ($next) { $next[0] } else { 0 })
+            tier = $(if ($cur) { $cur[1] } else { '' }); nextTier = $(if ($next) { $next[1] } else { '' })
+            today = [int]$script:daily[(Get-Date).ToString('yyyy-MM-dd')]
+        }
+    }
+    $script:remote.StateJson = $st | ConvertTo-Json -Depth 6 -Compress
+}
+
+# Commandes envoyees par le telephone (POST /api/cmd) : memes actions que les boutons du PC
+function Invoke-RemoteCommand([string]$json) {
+    try { $c = $json | ConvertFrom-Json } catch { return }
+    $g = $null
+    if ($c.id) { $g = $script:byId[[string]$c.id] }
+    switch ([string]$c.action) {
+        'launch'      { if ($g) { [void](Start-Spoof $g) } }
+        'stop'        { $s = @($script:sessions | Where-Object { $_.Proc.Id -eq [int]$c.pid })[0]; if ($s) { Stop-Session $s; Update-Ui; Set-Status "Arrêté · $($s.Name)" } }
+        'stopAll'     { Stop-All }
+        'rotStart'    { Start-Rotation }
+        'rotStop'     { if ($script:rot.On) { Stop-Rotation } }
+        'rotPause'    { Switch-RotationPause }
+        'rotNext'     { Skip-RotationGame }
+        'queueAdd'    { if ($g) { Add-ToQueue $g } }
+        'queueRemove' { $item = @($script:rotItems | Where-Object { $_.Id -eq [string]$c.id })[0]; if ($item) { Remove-FromQueue $item } }
+        'queueClear'  { Clear-Queue }
+        'random'      { Add-RandomGames }
+        'minutes'     { $m = [int]$c.value; if ($m -ge 1 -and $m -le 600) { $RotMinutes.Text = [string]$m } }
+        'questStart'  {
+            if ($g -and -not $script:qst.On) {
+                $m = [int]$c.minutes
+                if ($m -ge 1 -and $m -le 600) { $QuestMinutes.Text = [string]$m }
+                $ChkQuestMargin.IsChecked = [bool]$c.margin
+                Set-QuestGame $g
+                Start-Quest
+            }
+        }
+        'questStop'   { Stop-Quest }
+        'timer'       { $m = [int]$c.minutes; if ($m -ge 1 -and $m -le 1440) { Set-EndTimer $m } }
+        'timerClear'  { Clear-EndTimer }
+    }
+}
+
+# Commandes et nouveaux appairages, traites 4 fois par seconde quand le serveur tourne
+$remoteTimer = New-Object Windows.Threading.DispatcherTimer
+$remoteTimer.Interval = [TimeSpan]::FromMilliseconds(250)
+$remoteTimer.Add_Tick({
+    $changed = $false
+    $text = $null
+    while ($script:remote.Commands.TryDequeue([ref]$text)) { Invoke-RemoteCommand $text; $changed = $true }
+    $tok = $null
+    while ($script:remote.NewTokens.TryDequeue([ref]$tok)) {
+        $script:remoteTokens = @(@($script:remoteTokens) + $tok | Select-Object -Last 10)
+        Save-State
+        Set-Status 'Téléphone connecté' 'ok'
+        $changed = $true
+    }
+    if ($changed) { Publish-RemoteState; Update-RemoteUi }
 })
+
+function Start-Remote {
+    $script:remote.Pin = $script:remotePin
+    $script:remote.SetTokens([string[]]@($script:remoteTokens))
+    if ($script:allGames) { $script:remote.Catalog = $script:allGames }
+    if (-not $script:remote.Start($RemotePort)) {
+        Set-Status "Impossible d'ouvrir le port $RemotePort : il est peut-être déjà utilisé" 'err'
+        return $false
+    }
+    Publish-RemoteState
+    $remoteTimer.Start()
+    $true
+}
+
+function Stop-Remote {
+    $remoteTimer.Stop()
+    $script:remote.Stop()
+}
+
+function Set-RemoteEnabled([bool]$on) {
+    if ($on) {
+        $script:remoteOn = [bool](Start-Remote)
+        if ($script:remoteOn) { Set-Status 'Contrôle depuis le téléphone activé' 'ok' }
+    } else {
+        Stop-Remote
+        $script:remoteOn = $false
+        Set-Status 'Contrôle depuis le téléphone désactivé'
+    }
+    Update-RemoteUi
+    Save-State
+}
+
+# Nouveau code : les telephones deja appaires sont deconnectes
+function Reset-RemotePin {
+    $script:remotePin = [QsRemote]::NewPin()
+    $script:remoteTokens = @()
+    $script:remote.Pin = $script:remotePin
+    $script:remote.ClearTokens()
+    Update-RemoteUi
+    Save-State
+    Set-Status 'Nouveau code : les téléphones connectés doivent se reconnecter' 'ok'
+}
+
+function Format-Ago([TimeSpan]$t) {
+    if ($t.TotalSeconds -lt 60) { "$([int]$t.TotalSeconds) s" }
+    elseif ($t.TotalMinutes -lt 60) { "$([int]$t.TotalMinutes) min" }
+    elseif ($t.TotalHours -lt 48) { "$([int]$t.TotalHours) h" }
+    else { "$([int]$t.TotalDays) j" }
+}
+
+function Update-RemoteUi {
+    $script:updatingSettings = $true
+    $ChkRemote.IsChecked = [bool]$script:remoteOn
+    $script:updatingSettings = $false
+    $running = $script:remoteOn -and $script:remote.IsRunning
+    $RemotePanel.Visibility = if ($running) { 'Visible' } else { 'Collapsed' }
+    if (-not $running) { return }
+    $ips = @([QsRemote]::LocalAddresses())
+    $RemoteUrl.Text = if ($ips.Count) { "http://$($ips[0]):$RemotePort" } else { "http://<IP>:$RemotePort" }
+    $RemoteAlt.Text = if ($ips.Count -gt 1) { L ("Autres adresses : " + (($ips | Select-Object -Skip 1 | ForEach-Object { "http://$($_):$RemotePort" }) -join '  ·  ')) } else { '' }
+    $RemoteAlt.Visibility = if ($ips.Count -gt 1) { 'Visible' } else { 'Collapsed' }
+    $RemotePin.Text = $script:remotePin.Insert(3, ' ')
+    $count = $script:remote.TokenCount
+    $last = $script:remote.LastSeen
+    if ($last -gt (Get-Date).AddSeconds(-10)) {
+        $RemoteStatus.Text = L 'Téléphone connecté · en direct'
+        $RemoteStatus.Foreground = Brush '#3FB37F'
+    } elseif ($count -gt 0) {
+        $ago = if ($last -gt [DateTime]::MinValue) { Format-Ago ((Get-Date) - $last) } else { '—' }
+        $RemoteStatus.Text = L "$count téléphone(s) appairé(s) · dernière visite il y a $ago"
+        $RemoteStatus.Foreground = Brush '#9FA0A8'
+    } else {
+        $RemoteStatus.Text = L "Aucun téléphone appairé pour l'instant"
+        $RemoteStatus.Foreground = Brush '#9FA0A8'
+    }
+}
+
+$ChkRemote.Add_Click({ if (-not $script:updatingSettings) { Set-RemoteEnabled ([bool]$ChkRemote.IsChecked) } })
+$BtnRemoteReset.Add_Click({ Reset-RemotePin })
+
+$BtnStopAll.Add_Click({ Stop-All })
+
+$QueueList.AddHandler([Windows.Controls.Primitives.ButtonBase]::ClickEvent, [Windows.RoutedEventHandler]{
+    param($src, $e)
+    $g = $e.OriginalSource.Tag
+    if ($g -is [QsGame]) { Remove-FromQueue $g }
+})
+
+$BtnRotate.Add_Click({ if ($script:rot.On) { Stop-Rotation } else { Start-Rotation } })
+$BtnPause.Add_Click({ Switch-RotationPause })
+$BtnNext.Add_Click({ Skip-RotationGame })
+$BtnLists.Add_Click({ Show-ListsMenu })
+$BtnRandom.Add_Click({ Add-RandomGames })
+$BtnClearQueue.Add_Click({ Clear-Queue })
 
 $RotMinutes.Add_PreviewTextInput({ param($src, $e) $e.Handled = $e.Text -notmatch '^\d+$' })
 $RotMinutes.Add_TextChanged({ if (-not $script:rot.On) { Update-Rot }; Save-State })
@@ -1917,6 +2117,12 @@ $timer.Add_Tick({
     $want = ($script:sessions.Count -gt 0) -or $script:rot.On -or $script:qst.On
     if ($want -ne $script:awake) { [QsPower]::KeepAwake($want); $script:awake = $want }
 
+    # Telephone : etat a jour chaque seconde, statut de connexion dans les reglages
+    if ($script:remote.IsRunning) {
+        Publish-RemoteState
+        if ($SettingsOverlay.Visibility -eq 'Visible') { Update-RemoteUi }
+    }
+
     if (($now - $script:lastSave).TotalSeconds -ge 30) {
         $script:lastSave = $now
         Save-History
@@ -1932,6 +2138,7 @@ $win.Add_Closing({
     Save-History
     foreach ($s in @($script:sessions)) { Stop-Session $s }
     [QsPower]::KeepAwake($false)
+    Stop-Remote
     $script:hotkey.Dispose()
     if ($script:widget) { $script:widget.Close() }
     $script:tray.Visible = $false
@@ -1975,6 +2182,7 @@ $timer.Start()
 [void](New-Object Windows.Interop.WindowInteropHelper $win).EnsureHandle()
 if (-not $StartHidden) { $win.Show(); [void]$win.Activate() }
 if ($script:widgetWanted) { Show-Widget }
+if ($script:remoteOn) { $script:remoteOn = [bool](Start-Remote) }
 [Windows.Threading.Dispatcher]::Run()
 
 # Fenetre fermee : on quitte tout de suite (aucun thread ne doit garder le processus en vie)
