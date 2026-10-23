@@ -114,6 +114,14 @@ $XamlEn = [ordered]@{
     'ToolTip="Réglages"' = 'ToolTip="Settings"'
     'ToolTip="Vider la file"' = 'ToolTip="Clear queue"'
     'Value="Favori (Ctrl+D)"' = 'Value="Favorite (Ctrl+D)"'
+    'Text="Téléphone"' = 'Text="Phone"'
+    'Text="Contrôler depuis le téléphone"' = 'Text="Control from your phone"'
+    'Text="Une appli sur ton téléphone, connecté au même Wi-Fi. Le PC doit rester allumé."' = 'Text="An app on your phone, on the same Wi-Fi. The PC must stay on."'
+    'Text="Sur ton téléphone, ouvre cette adresse :"' = 'Text="On your phone, open this address:"'
+    'Text="puis entre ce code :"' = 'Text="then enter this code:"'
+    'Content="Nouveau code"' = 'Content="New code"'
+    'ToolTip="Change le code et déconnecte tous les téléphones"' = 'ToolTip="Changes the code and disconnects all phones"'
+    'Text="Astuce : sur le téléphone, « Ajouter à l''écran d''accueil » installe l''appli avec son icône. Si Windows demande l''accès au réseau pour PowerShell, autorise les réseaux privés."' = 'Text="Tip: on the phone, &quot;Add to Home screen&quot; installs the app with its icon. If Windows asks for network access for PowerShell, allow private networks."'
 }
 
 $MsgEn = @{
@@ -235,6 +243,12 @@ $MsgEn = @{
     "En bas à gauche de l'écran" = 'Bottom left of the screen'
     "En bas à droite de l'écran" = 'Bottom right of the screen'
     'Rotation · pause' = 'Rotation · paused'
+    'Contrôle depuis le téléphone activé' = 'Phone control enabled'
+    'Contrôle depuis le téléphone désactivé' = 'Phone control disabled'
+    'Nouveau code : les téléphones connectés doivent se reconnecter' = 'New code: connected phones must reconnect'
+    'Téléphone connecté' = 'Phone connected'
+    'Téléphone connecté · en direct' = 'Phone connected · live'
+    "Aucun téléphone appairé pour l'instant" = 'No phone paired yet'
     'Langue : français' = 'Language: French'
     'Langue : anglais' = 'Language: English'
 }
@@ -306,7 +320,11 @@ $MsgEnRx = @(
     @('^(\d+) session\(s\) arrêtée\(s\)$', '{1} session(s) stopped'),
     @('^(\d+) jeux ajoutés à la rotation$', '{1} games added to rotation'),
     @("^(.+) s'est arrêté$", '{1} has stopped'),
-    @('^cache du (.+) · mise à jour…$', 'cache from {1} · updating…')
+    @('^cache du (.+) · mise à jour…$', 'cache from {1} · updating…'),
+    @("^Impossible d'ouvrir le port (\d+) : il est peut-être déjà utilisé$", 'Could not open port {1}: it may already be in use'),
+    @('^(\d+) téléphone\(s\) appairé\(s\) · dernière visite il y a (.+) j$', '{1} phone(s) paired · last seen {2} d ago'),
+    @('^(\d+) téléphone\(s\) appairé\(s\) · dernière visite il y a (.+)$', '{1} phone(s) paired · last seen {2} ago'),
+    @('^Autres adresses : (.+)$', 'Other addresses: {1}')
 )
 
 # Traduit un texte affiche (francais -> anglais si la langue choisie est l'anglais)
