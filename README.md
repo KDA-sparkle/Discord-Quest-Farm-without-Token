@@ -35,6 +35,7 @@ Discord then thinks you are playing: handy for "play X for N minutes" quests.
 | 📊 **Stats** | Simulated time over 14 days, most played games, "Game Variety" counter |
 | 🪟 **Fake games** | Small card with the game icon and a timer; color, size and screen corner are configurable |
 | ⚡ **Live settings** | Language, colors and fake game appearance apply instantly, even to fake games already running |
+| 📱 **Phone app** | Control the PC app from your phone on the same Wi-Fi: sessions, rotation, game search, quests, timer, stats |
 | 🧩 **Comfort** | Always-on-top mini widget, notification area, launch with Windows (optional), desktop shortcut, diagnostics, English / French, 6 accent colors |
 | 🪶 **Lightweight** | ~2–6% of one core and 60–130 MB; fake games stop with the app, even if it crashes |
 
@@ -71,6 +72,19 @@ Discord then thinks you are playing: handy for "play X for N minutes" quests.
 | `Delete` | Stop the latest session |
 | `Esc` | Clear search, close settings |
 
+## Phone app
+
+A small web app, served by the PC app on your local network, lets you control everything from your phone
+(Android or iPhone, no store needed).
+
+1. On the PC: **Settings → Phone → Control from your phone**. The app shows an address and a 6-digit code.
+2. On the phone, connected to the **same Wi-Fi**: open the address, then enter the code.
+3. Optional: **Add to Home screen** in the browser menu installs it with its icon, full screen.
+
+- Nothing goes through the Internet: the phone talks to the PC directly on your network (port `47820`).
+- Without the code, nobody else on the network can control the app. **New code** disconnects every phone.
+- The PC must stay on with Quest Spoofer and Discord open. If Windows asks for network access for PowerShell, allow private networks.
+
 ## Project structure
 
 ```
@@ -80,6 +94,8 @@ app/MainWindow.xaml   main window
 app/Widget.xaml       mini widget
 app/Types.cs          C# types (catalog, sessions, Windows job, global hotkey, icon)
 app/Stub.cs           fake exe source
+app/Remote.cs         local server for the phone app
+app/mobile/           phone app (HTML, CSS, JavaScript, icons)
 app/i18n.ps1          English translations
 data/                 (created at runtime) settings, history, catalog cache
 games/                (created at runtime) fake exes

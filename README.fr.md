@@ -35,6 +35,7 @@ Discord croit alors que tu joues : pratique pour les quêtes « joue à X pendan
 | 📊 **Stats** | Temps simulé sur 14 jours, jeux les plus joués, compteur « Game Variety » |
 | 🪟 **Faux jeux** | Petite carte avec l'icône du jeu et un chrono ; couleur, taille et coin de l'écran réglables |
 | ⚡ **Réglages en direct** | Langue, couleurs et apparence des faux jeux s'appliquent tout de suite, même aux faux jeux déjà ouverts |
+| 📱 **Appli téléphone** | Pilote l'outil PC depuis ton téléphone sur le même Wi-Fi : sessions, rotation, recherche de jeux, quêtes, minuterie, stats |
 | 🧩 **Confort** | Mini-widget toujours visible, zone de notification, lancement avec Windows (option), raccourci bureau, diagnostic, français / anglais, 6 couleurs d'accent |
 | 🪶 **Léger** | ~2 à 6 % d'un cœur et 60 à 130 Mo ; les faux jeux s'arrêtent avec l'outil, même en cas de plantage |
 
@@ -71,6 +72,19 @@ Discord croit alors que tu joues : pratique pour les quêtes « joue à X pendan
 | `Suppr` | Arrêter la dernière session |
 | `Échap` | Effacer la recherche, fermer les réglages |
 
+## Appli téléphone
+
+Une petite appli web, servie par l'outil PC sur ton réseau local, permet de tout piloter depuis ton téléphone
+(Android ou iPhone, sans passer par un store).
+
+1. Sur le PC : **Réglages → Téléphone → Contrôler depuis le téléphone**. L'outil affiche une adresse et un code à 6 chiffres.
+2. Sur le téléphone, connecté au **même Wi-Fi** : ouvre l'adresse, puis entre le code.
+3. En option : **Ajouter à l'écran d'accueil** dans le menu du navigateur l'installe avec son icône, en plein écran.
+
+- Rien ne passe par Internet : le téléphone parle directement au PC sur ton réseau (port `47820`).
+- Sans le code, personne d'autre sur le réseau ne peut piloter l'outil. **Nouveau code** déconnecte tous les téléphones.
+- Le PC doit rester allumé avec Quest Spoofer et Discord ouverts. Si Windows demande l'accès au réseau pour PowerShell, autorise les réseaux privés.
+
 ## Structure du projet
 
 ```
@@ -80,6 +94,8 @@ app/MainWindow.xaml   fenêtre principale
 app/Widget.xaml       mini-widget
 app/Types.cs          types C# (catalogue, sessions, job Windows, raccourci global, icône)
 app/Stub.cs           source du faux exe
+app/Remote.cs         serveur local pour l'appli téléphone
+app/mobile/           appli téléphone (HTML, CSS, JavaScript, icônes)
 app/i18n.ps1          traductions anglaises
 data/                 (créé à l'exécution) réglages, historique, cache du catalogue
 games/                (créé à l'exécution) faux exe
