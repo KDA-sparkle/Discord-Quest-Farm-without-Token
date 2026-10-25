@@ -74,16 +74,59 @@ Discord croit alors que tu joues : pratique pour les quêtes « joue à X pendan
 
 ## Appli téléphone
 
-Une petite appli web, servie par l'outil PC sur ton réseau local, permet de tout piloter depuis ton téléphone
-(Android ou iPhone, sans passer par un store).
+Pilote l'outil PC depuis ton téléphone : lancer / arrêter des jeux, gérer la rotation, lancer une quête,
+régler la minuterie et voir tes stats, sans te lever.
 
-1. Sur le PC : **Réglages → Téléphone → Contrôler depuis le téléphone**. L'outil affiche une adresse et un code à 6 chiffres.
-2. Sur le téléphone, connecté au **même Wi-Fi** : ouvre l'adresse, puis entre le code.
-3. En option : **Ajouter à l'écran d'accueil** dans le menu du navigateur l'installe avec son icône, en plein écran.
+<p align="center">
+  <img src="assets/mobile-home-fr.png" width="200" alt="Accueil">
+  <img src="assets/mobile-games-fr.png" width="200" alt="Jeux">
+  <img src="assets/mobile-quest-fr.png" width="200" alt="Quête">
+  <img src="assets/mobile-stats-fr.png" width="200" alt="Stats">
+</p>
 
-- Rien ne passe par Internet : le téléphone parle directement au PC sur ton réseau (port `47820`).
-- Sans le code, personne d'autre sur le réseau ne peut piloter l'outil. **Nouveau code** déconnecte tous les téléphones.
-- Le PC doit rester allumé avec Quest Spoofer et Discord ouverts. Si Windows demande l'accès au réseau pour PowerShell, autorise les réseaux privés.
+> **Ce n'est pas une appli à télécharger** (pas d'APK, pas de store). C'est une appli web servie **par ton PC**
+> sur ton réseau local : tu l'ouvres dans le navigateur du téléphone et tu peux l'ajouter à l'écran d'accueil.
+> Elle ne fonctionne que si Quest Spoofer tourne sur le PC.
+
+### Connexion
+
+1. Sur le PC : **Réglages → Téléphone**, coche **Contrôler depuis le téléphone**.
+   L'outil affiche une adresse (ex. `http://192.168.1.20:47820`) et un **code à 6 chiffres**.
+2. Sur le téléphone, connecté au **même Wi-Fi que le PC** : tape cette adresse dans le navigateur.
+3. Entre le code. Le téléphone reste connecté ensuite, pas besoin de le retaper.
+
+### L'installer comme une vraie appli
+
+- **Android (Chrome)** : menu **⋮** → **Installer l'application** (ou **Ajouter à l'écran d'accueil**).
+- **iPhone (Safari)** : bouton **Partager** → **Sur l'écran d'accueil**.
+
+Elle s'ouvre alors en plein écran avec son icône, comme une appli normale.
+
+### Les onglets
+
+| Onglet | Ce qu'on y fait |
+|---|---|
+| **Accueil** | Jeux en cours (avec bouton ✕ pour les arrêter), rotation : pause, jeu suivant, mélanger, durée par jeu, minuterie |
+| **Jeux** | Recherche dans tout le catalogue : ▶ lancer, ＋ ajouter à la rotation, 🚩 lancer comme quête |
+| **Quête** | Compte à rebours et progression de la quête en cours, bouton pour l'arrêter |
+| **Stats** | Progression « Game Variety », temps simulé du jour, sessions, déconnexion du téléphone |
+
+La langue et la couleur d'accent suivent celles de l'appli PC.
+
+### Sécurité
+
+- **Rien ne passe par Internet** : le téléphone parle directement au PC sur ton réseau (port `47820`).
+- Sans le code, personne d'autre sur le Wi-Fi ne peut piloter l'outil (5 mauvais codes = blocage d'une minute).
+- **Nouveau code** dans les réglages déconnecte tous les téléphones. Décocher l'option coupe le serveur.
+
+### Ça ne se connecte pas ?
+
+- Vérifie que le téléphone est bien sur **le même Wi-Fi** que le PC (pas en 4G/5G, pas sur un Wi-Fi « invité »).
+- Si Windows a affiché une alerte du pare-feu pour PowerShell, il faut autoriser les **réseaux privés**.
+  Ton réseau doit aussi être en profil **Privé** (Paramètres Windows → Réseau → Wi-Fi/Ethernet → Type de profil).
+- Désactive un éventuel **VPN** sur le téléphone ou le PC.
+- Si le PC a plusieurs cartes réseau, essaie l'autre adresse affichée sous la principale.
+- Le PC doit rester allumé avec Quest Spoofer et Discord ouverts (l'outil peut être réduit dans la zone de notification).
 
 ## Structure du projet
 

@@ -74,16 +74,59 @@ Discord then thinks you are playing: handy for "play X for N minutes" quests.
 
 ## Phone app
 
-A small web app, served by the PC app on your local network, lets you control everything from your phone
-(Android or iPhone, no store needed).
+Control the PC app from your phone: start / stop games, manage the rotation, start a quest,
+set the timer and check your stats, without getting up.
 
-1. On the PC: **Settings → Phone → Control from your phone**. The app shows an address and a 6-digit code.
-2. On the phone, connected to the **same Wi-Fi**: open the address, then enter the code.
-3. Optional: **Add to Home screen** in the browser menu installs it with its icon, full screen.
+<p align="center">
+  <img src="assets/mobile-home-en.png" width="200" alt="Home">
+  <img src="assets/mobile-games-en.png" width="200" alt="Games">
+  <img src="assets/mobile-quest-en.png" width="200" alt="Quest">
+  <img src="assets/mobile-stats-en.png" width="200" alt="Stats">
+</p>
 
-- Nothing goes through the Internet: the phone talks to the PC directly on your network (port `47820`).
-- Without the code, nobody else on the network can control the app. **New code** disconnects every phone.
-- The PC must stay on with Quest Spoofer and Discord open. If Windows asks for network access for PowerShell, allow private networks.
+> **There is nothing to download** (no APK, no store). It is a web app served **by your PC** on your local
+> network: you open it in your phone's browser and can add it to your home screen.
+> It only works while Quest Spoofer is running on the PC.
+
+### Connecting
+
+1. On the PC: **Settings → Phone**, tick **Control from your phone**.
+   The app shows an address (e.g. `http://192.168.1.20:47820`) and a **6-digit code**.
+2. On the phone, connected to the **same Wi-Fi as the PC**: type that address in the browser.
+3. Enter the code. The phone stays signed in afterwards, no need to type it again.
+
+### Installing it like a real app
+
+- **Android (Chrome)**: **⋮** menu → **Install app** (or **Add to Home screen**).
+- **iPhone (Safari)**: **Share** button → **Add to Home Screen**.
+
+It then opens full screen with its own icon, like a regular app.
+
+### Tabs
+
+| Tab | What you can do |
+|---|---|
+| **Home** | Running games (✕ to stop them), rotation: pause, skip, shuffle, minutes per game, timer |
+| **Games** | Search the whole catalog: ▶ start, ＋ add to rotation, 🚩 start as a quest |
+| **Quest** | Countdown and progress of the current quest, button to stop it |
+| **Stats** | "Game Variety" progress, simulated time today, sessions, log out this phone |
+
+Language and accent color follow the PC app.
+
+### Security
+
+- **Nothing goes through the Internet**: the phone talks to the PC directly on your network (port `47820`).
+- Without the code, nobody else on the Wi-Fi can control the app (5 wrong codes = locked for one minute).
+- **New code** in the settings disconnects every phone. Unticking the option stops the server.
+
+### Can't connect?
+
+- Make sure the phone is on **the same Wi-Fi** as the PC (not mobile data, not a "guest" Wi-Fi).
+- If Windows showed a firewall prompt for PowerShell, **private networks** must be allowed.
+  Your network must also use the **Private** profile (Windows Settings → Network → Wi-Fi/Ethernet → Network profile type).
+- Turn off any **VPN** on the phone or the PC.
+- If the PC has several network adapters, try the other address shown under the main one.
+- The PC must stay on with Quest Spoofer and Discord open (the app can be minimized to the notification area).
 
 ## Project structure
 
