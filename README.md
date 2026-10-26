@@ -6,7 +6,7 @@
 
 <p align="center">
   Discord presence simulator for Windows<br>
-  <sub><code>// you only play with me ♡</code></sub><br>
+  <sub><code>online · I always know what you're playing 🔪</code></sub><br>
   <b>English</b> · <a href="README.fr.md">Français</a>
 </p>
 
@@ -37,7 +37,7 @@ Discord then thinks you are playing: handy for "play X for N minutes" quests.
 | 🪟 **Fake games** | Small card with the game icon and a timer; color, size and screen corner are configurable |
 | ⚡ **Live settings** | Language, colors and fake game appearance apply instantly, even to fake games already running |
 | 📱 **Phone app** | Control the PC app from your phone on the same Wi-Fi: sessions, rotation, game search, quests, timer, stats |
-| 🩸 **Yandere theme** | Deep aubergine, blood red and sakura, serif titles; 6 accent colors (blood, sakura, cherry, lilac, mint, rose gold) applied everywhere, phone and fake games included |
+| 🩸 **Yandere theme** | Aubergine background, blood red, dashed stitches and a beating stitched heart, a fake terminal that keeps 'watching' at the bottom; 6 accent colors (blood, sakura, cherry, lilac, mint, rose gold) applied everywhere, phone and fake games included |
 | 🧩 **Comfort** | Always-on-top mini widget, notification area, launch with Windows (optional), desktop shortcut, diagnostics, English / French |
 | 🪶 **Lightweight** | ~2–6% of one core and 60–130 MB; fake games stop with the app, even if it crashes |
 

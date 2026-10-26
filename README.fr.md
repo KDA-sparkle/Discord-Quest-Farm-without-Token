@@ -6,7 +6,7 @@
 
 <p align="center">
   Simulateur de présence Discord pour Windows<br>
-  <sub><code>// tu ne joues qu'avec moi ♡</code></sub><br>
+  <sub><code>en ligne · je sais toujours à quoi tu joues 🔪</code></sub><br>
   <a href="README.md">English</a> · <b>Français</b>
 </p>
 
@@ -37,7 +37,7 @@ Discord croit alors que tu joues : pratique pour les quêtes « joue à X pendan
 | 🪟 **Faux jeux** | Petite carte avec l'icône du jeu et un chrono ; couleur, taille et coin de l'écran réglables |
 | ⚡ **Réglages en direct** | Langue, couleurs et apparence des faux jeux s'appliquent tout de suite, même aux faux jeux déjà ouverts |
 | 📱 **Appli téléphone** | Pilote l'outil PC depuis ton téléphone sur le même Wi-Fi : sessions, rotation, recherche de jeux, quêtes, minuterie, stats |
-| 🩸 **Thème yandere** | Aubergine profond, rouge sang et sakura, titres en serif ; 6 couleurs d'accent (sang, sakura, cerise, lilas, menthe, or rose) appliquées partout, téléphone et faux jeux compris |
+| 🩸 **Thème yandere** | Fond aubergine, rouge sang, coutures en pointillés et cœur recousu qui bat, faux terminal qui « surveille » en bas de l'écran ; 6 couleurs d'accent (sang, sakura, cerise, lilas, menthe, or rose) appliquées partout, téléphone et faux jeux compris |
 | 🧩 **Confort** | Mini-widget toujours visible, zone de notification, lancement avec Windows (option), raccourci bureau, diagnostic, français / anglais |
 | 🪶 **Léger** | ~2 à 6 % d'un cœur et 60 à 130 Mo ; les faux jeux s'arrêtent avec l'outil, même en cas de plantage |
 
