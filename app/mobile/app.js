@@ -1,15 +1,16 @@
 'use strict';
-// Quest Spoofer mobile : pilote l'outil PC sur le reseau local.
+// Quest Farm mobile : pilote l'outil PC sur le reseau local.
 // L'etat vient de GET /api/state (toutes les 2 s), les actions partent en POST /api/cmd.
 // Les textes affiches (noms de jeux...) passent toujours par textContent, jamais par innerHTML.
 
 // ---------- Textes (la langue suit celle de l'outil PC) ----------
 const TEXT = {
   fr: {
-    pairText: 'Entre le code affiché dans Quest Spoofer sur ton PC (Réglages → Téléphone).',
+    tagline: '// tu ne joues qu’avec moi ♡',
+    pairText: 'Entre le code affiché dans Quest Farm sur ton PC (Réglages → Téléphone).',
     connect: 'Connecter', badPin: 'Code incorrect.', locked: 'Trop d’essais. Réessaie dans une minute.',
     netErr: 'Impossible de joindre le PC.',
-    offline: 'Impossible de joindre le PC. Vérifie que Quest Spoofer est ouvert et que tu es sur le même Wi-Fi.',
+    offline: 'Impossible de joindre le PC. Vérifie que Quest Farm est ouvert et que tu es sur le même Wi-Fi.',
     discordOn: 'Discord actif', discordOff: 'Discord fermé',
     tabHome: 'Accueil', tabGames: 'Jeux', tabQuest: 'Quête', tabStats: 'Stats',
     running: 'En cours', noSession: 'Aucune session', noSessionHint: 'Lance un jeu depuis l’onglet Jeux.',
@@ -27,14 +28,15 @@ const TEXT = {
     startQuest: 'Lancer la quête', stopQuest: 'Arrêter la quête', questRunning: 'Quête en cours', questPaused: 'En pause : Discord est fermé',
     variety: 'Game Variety', nextTier: 'prochain : {0}', reached: '{0} atteint', today: 'Aujourd’hui', simulated: 'temps simulé',
     sessions: 'Sessions', fakeGames: 'faux jeux en cours', catalog: 'Catalogue', games: 'jeux détectables',
-    device: 'Ce téléphone', deviceDesc: 'Connecté à Quest Spoofer sur ton réseau Wi-Fi.', logout: 'Se déconnecter',
-    pcNote: 'Le PC doit rester allumé avec Quest Spoofer et Discord ouverts. La langue et la couleur suivent l’outil PC.',
+    device: 'Ce téléphone', deviceDesc: 'Connecté à Quest Farm sur ton réseau Wi-Fi.', logout: 'Se déconnecter',
+    pcNote: 'Le PC doit rester allumé avec Quest Farm et Discord ouverts. La langue et la couleur suivent l’outil PC.',
   },
   en: {
-    pairText: 'Enter the code shown in Quest Spoofer on your PC (Settings → Phone).',
+    tagline: '// you only play with me ♡',
+    pairText: 'Enter the code shown in Quest Farm on your PC (Settings → Phone).',
     connect: 'Connect', badPin: 'Wrong code.', locked: 'Too many attempts. Try again in a minute.',
     netErr: 'Could not reach the PC.',
-    offline: 'Could not reach the PC. Make sure Quest Spoofer is open and you are on the same Wi-Fi.',
+    offline: 'Could not reach the PC. Make sure Quest Farm is open and you are on the same Wi-Fi.',
     discordOn: 'Discord active', discordOff: 'Discord closed',
     tabHome: 'Home', tabGames: 'Games', tabQuest: 'Quest', tabStats: 'Stats',
     running: 'Running', noSession: 'No session', noSessionHint: 'Start a game from the Games tab.',
@@ -52,8 +54,8 @@ const TEXT = {
     startQuest: 'Start quest', stopQuest: 'Stop quest', questRunning: 'Quest running', questPaused: 'Paused: Discord is closed',
     variety: 'Game Variety', nextTier: 'next: {0}', reached: '{0} reached', today: 'Today', simulated: 'simulated time',
     sessions: 'Sessions', fakeGames: 'fake games running', catalog: 'Catalog', games: 'detectable games',
-    device: 'This phone', deviceDesc: 'Connected to Quest Spoofer on your Wi-Fi network.', logout: 'Log out',
-    pcNote: 'The PC must stay on with Quest Spoofer and Discord open. Language and color follow the PC app.',
+    device: 'This phone', deviceDesc: 'Connected to Quest Farm on your Wi-Fi network.', logout: 'Log out',
+    pcNote: 'The PC must stay on with Quest Farm and Discord open. Language and color follow the PC app.',
   },
 };
 let lang = (navigator.language || 'fr').toLowerCase().startsWith('fr') ? 'fr' : 'en';
@@ -208,6 +210,7 @@ function applyPcSettings() {
 function showPair() {
   $('app').hidden = true;
   $('pair').hidden = false;
+  $('tagline').textContent = t('tagline');
   $('pair-text').textContent = t('pairText');
   $('pair-btn').textContent = t('connect');
   setTimeout(() => $('pin').focus(), 100);

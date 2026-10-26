@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#111214">
+  <meta name="theme-color" content="#14080F">
   <meta name="color-scheme" content="dark">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Quest Spoofer">
-  <title>Quest Spoofer</title>
+  <meta name="apple-mobile-web-app-title" content="Quest Farm">
+  <title>Quest Farm</title>
   <link rel="manifest" href="/manifest.webmanifest">
   <link rel="icon" href="/icon-192.png">
   <link rel="apple-touch-icon" href="/icon-192.png">
@@ -19,7 +19,8 @@
   <!-- Ecran d'appairage (code a 6 chiffres affiche sur le PC) -->
   <section id="pair" class="pair" hidden>
     <img src="/icon-192.png" alt="" class="pair-logo">
-    <h1>Quest Spoofer</h1>
+    <h1>Quest <em>Farm</em></h1>
+    <p id="tagline" class="tagline"></p>
     <p id="pair-text"></p>
     <input id="pin" class="pin" type="tel" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="••••••">
     <button id="pair-btn" class="btn primary wide"></button>
@@ -30,7 +31,7 @@
   <div id="app" class="app" hidden>
     <header class="top">
       <img src="/icon-192.png" alt="" class="logo">
-      <div class="title">Quest Spoofer</div>
+      <div class="title">Quest <em>Farm</em></div>
       <div id="discord" class="badge"><span class="dot"></span><span id="discord-text"></span></div>
     </header>
     <div id="offline" class="offline" hidden></div>
