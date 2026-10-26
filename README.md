@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/logo.png" width="96" alt="Quest Spoofer">
+  <img src="assets/logo.png" width="96" alt="Quest Farm">
 </p>
 
 <h1 align="center">Quest Spoofer</h1>
