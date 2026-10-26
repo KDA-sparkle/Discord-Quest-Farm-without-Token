@@ -6,14 +6,18 @@
 // ---------- Textes (la langue suit celle de l'outil PC) ----------
 const TEXT = {
   fr: {
-    tagline: '// tu ne joues qu’avec moi ♡',
+    tagline: 'en ligne · je sais toujours à quoi tu joues 🔪',
+    away: 'reviens… 💔',
+    log: ['surveillance de Discord : active ♡', 'ping Discord… latence : ∞', 'localisation de tes jeux : trouvés (comme toujours)',
+      'tentative de fuite détectée… verrouillage du cœur', 'rival.exe a cessé de fonctionner', 'oubli_de_toi.exe : introuvable',
+      'sauvegarde de tes quêtes… (x47)', 'firewall : quiconque s’approche est bloqué 🔪', 'batterie de patience : 0 % (comme d’habitude)'],
     pairText: 'Entre le code affiché dans Quest Farm sur ton PC (Réglages → Téléphone).',
     connect: 'Connecter', badPin: 'Code incorrect.', locked: 'Trop d’essais. Réessaie dans une minute.',
     netErr: 'Impossible de joindre le PC.',
     offline: 'Impossible de joindre le PC. Vérifie que Quest Farm est ouvert et que tu es sur le même Wi-Fi.',
     discordOn: 'Discord actif', discordOff: 'Discord fermé',
     tabHome: 'Accueil', tabGames: 'Jeux', tabQuest: 'Quête', tabStats: 'Stats',
-    running: 'En cours', noSession: 'Aucune session', noSessionHint: 'Lance un jeu depuis l’onglet Jeux.',
+    running: 'En cours', noSession: 'Personne ici… pour l’instant', noSessionHint: 'Choisis un jeu. Une fois lancé, je ne le lâche plus 🔪',
     kindManual: 'Lancement manuel', kindRot: 'Rotation', kindQuest: 'Quête',
     rotation: 'Rotation automatique', gameOf: 'Jeu {0}/{1} · {2}', paused: 'En pause', pausedDiscord: 'En pause (Discord fermé)',
     queued: '{0} jeu(x) en file · {1} min chacun', queueEmpty: 'Ajoute des jeux depuis l’onglet Jeux.',
@@ -32,14 +36,18 @@ const TEXT = {
     pcNote: 'Le PC doit rester allumé avec Quest Farm et Discord ouverts. La langue et la couleur suivent l’outil PC.',
   },
   en: {
-    tagline: '// you only play with me ♡',
+    tagline: 'online · I always know what you’re playing 🔪',
+    away: 'come back… 💔',
+    log: ['Discord surveillance: active ♡', 'ping Discord… latency: ∞', 'locating your games: found (as always)',
+      'escape attempt detected… locking the heart', 'rival.exe has stopped working', 'forget_you.exe: not found',
+      'saving your quests… (x47)', 'firewall: anyone who gets close is blocked 🔪', 'patience battery: 0% (as usual)'],
     pairText: 'Enter the code shown in Quest Farm on your PC (Settings → Phone).',
     connect: 'Connect', badPin: 'Wrong code.', locked: 'Too many attempts. Try again in a minute.',
     netErr: 'Could not reach the PC.',
     offline: 'Could not reach the PC. Make sure Quest Farm is open and you are on the same Wi-Fi.',
     discordOn: 'Discord active', discordOff: 'Discord closed',
     tabHome: 'Home', tabGames: 'Games', tabQuest: 'Quest', tabStats: 'Stats',
-    running: 'Running', noSession: 'No session', noSessionHint: 'Start a game from the Games tab.',
+    running: 'Running', noSession: 'Nobody here… for now', noSessionHint: 'Pick a game. Once it starts, I never let it go 🔪',
     kindManual: 'Manual launch', kindRot: 'Rotation', kindQuest: 'Quest',
     rotation: 'Auto rotation', gameOf: 'Game {0}/{1} · {2}', paused: 'Paused', pausedDiscord: 'Paused (Discord closed)',
     queued: '{0} game(s) queued · {1} min each', queueEmpty: 'Add games from the Games tab.',
@@ -60,6 +68,17 @@ const TEXT = {
 };
 let lang = (navigator.language || 'fr').toLowerCase().startsWith('fr') ? 'fr' : 'en';
 const t = (key, ...args) => (TEXT[lang][key] ?? TEXT.fr[key] ?? key).replace(/\{(\d)\}/g, (_, i) => args[i]);
+
+// Faux terminal en bas de l'ecran (ambiance yandere.eu), et titre de l'onglet quand on s'en va
+let logIdx = Math.floor(Math.random() * TEXT.fr.log.length);
+function stepLog() {
+  const lines = TEXT[lang].log;
+  logIdx = (logIdx + 1) % lines.length;
+  document.getElementById('log-text').textContent = lines[logIdx];
+}
+stepLog();
+setInterval(stepLog, 4500);
+document.addEventListener('visibilitychange', () => { document.title = document.hidden ? t('away') : 'Quest Farm'; });
 
 // ---------- Icones (SVG statiques) ----------
 const ICON = {
