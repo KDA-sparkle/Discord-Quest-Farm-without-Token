@@ -1,5 +1,5 @@
 ﻿# ============================================================
-#  Discord Quest Spoofer - UI (PowerShell + WPF)
+#  Quest Farm - UI (PowerShell + WPF)
 #  Lance des faux processus (noms des jeux detectables Discord)
 #  pour que Discord te voie "en train de jouer". Aucun token,
 #  aucune donnee de compte, aucun binaire tiers telecharge.
@@ -19,7 +19,7 @@ $ErrorActionPreference = 'Stop'
 Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase, System.Windows.Forms, System.Drawing
 
 trap {
-    [void][System.Windows.MessageBox]::Show("Erreur fatale / Fatal error :`n$($_.Exception.Message)", 'Quest Spoofer')
+    [void][System.Windows.MessageBox]::Show("Erreur fatale / Fatal error :`n$($_.Exception.Message)", 'Quest Farm')
     break
 }
 
@@ -44,19 +44,19 @@ $Tiers = @( @(2, 'Sampler'), @(5, 'Dabbler'), @(10, 'Enthusiast'), @(100, 'Unive
 
 # Couleurs d'accent : couleur unie, nom affiche
 $Accents = [ordered]@{
-    indigo  = @('#7C83F7', 'Indigo')
-    violet  = @('#A78BFA', 'Violet')
-    emerald = @('#34C78A', 'Émeraude')
-    rose    = @('#F0729C', 'Rose')
-    amber   = @('#F2A93B', 'Ambre')
-    sky     = @('#4EA8F7', 'Bleu ciel')
+    blood   = @('#E8335A', 'Sang')
+    sakura  = @('#FF7EB6', 'Sakura')
+    cherry  = @('#FF4D8D', 'Cerise')
+    lilac   = @('#B98CFF', 'Lilas')
+    mint    = @('#7FD8C9', 'Menthe')
+    rosegold = @('#E7A07F', 'Or rose')
 }
 
 # Lancement sans console (raccourci du bureau, demarrage avec Windows)
 $Conhost = Join-Path $env:WINDIR 'System32\conhost.exe'
 $LaunchArgs = '--headless "{0}" -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "{1}"' -f (Join-Path $PSHOME 'powershell.exe'), (Join-Path $root 'QuestSpoofer.ps1')
 $RunKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
-$ShortcutPath = Join-Path ([Environment]::GetFolderPath('Desktop')) 'Quest Spoofer.lnk'
+$ShortcutPath = Join-Path ([Environment]::GetFolderPath('Desktop')) 'Quest Farm.lnk'
 $IcoPath = Join-Path $appDir 'QuestSpoofer.ico'
 
 # --- Langue (lue tot : l'interface est traduite avant d'etre chargee) ---
@@ -79,7 +79,7 @@ if (-not ('QsSession' -as [type])) {
 [void][QsWin]::SetAppId('KDA-sparkle.QuestSpoofer')
 
 # --- Compiler une fois le faux exe ---
-$blank = Join-Path $gamesDir '_stub_v5.exe'
+$blank = Join-Path $gamesDir '_stub_v6.exe'
 if (-not (Test-Path -LiteralPath $blank)) {
     $csc = Join-Path ([Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()) 'csc.exe'
     if (-not (Test-Path $csc)) { [void][Windows.MessageBox]::Show("csc.exe introuvable (.NET Framework requis)."); return }
@@ -130,7 +130,7 @@ function Set-Status([string]$msg, [string]$kind = 'info') {
 
 function Write-StatusLine {
     $msg, $kind, $at = $script:lastStatus
-    $color = @{ ok = '#3FB37F'; err = '#E5484D'; warn = '#E5B33A'; info = '#9FA0A8' }[$kind]
+    $color = @{ ok = '#7FD8C9'; err = '#FF4D6D'; warn = '#F5B971'; info = '#C7A9B6' }[$kind]
     $Status.Text = '{0:HH:mm}   {1}' -f $at, (L $msg)
     $Status.Foreground = Brush $color
 }
@@ -174,9 +174,9 @@ try {
 
 $script:tray = New-Object Windows.Forms.NotifyIcon
 $script:tray.Icon = $appIcon
-$script:tray.Text = 'Quest Spoofer'
+$script:tray.Text = 'Quest Farm'
 $trayMenu = New-Object Windows.Forms.ContextMenuStrip
-[void]$trayMenu.Items.Add((L 'Ouvrir Quest Spoofer'), $null, { Show-Main })
+[void]$trayMenu.Items.Add((L 'Ouvrir Quest Farm'), $null, { Show-Main })
 [void]$trayMenu.Items.Add((L 'Mini-widget'), $null, { if ($script:widgetOn) { Hide-Widget } else { Show-Widget } })
 [void]$trayMenu.Items.Add((L 'Pause / reprise de la rotation'), $null, { Switch-RotationPause })
 [void]$trayMenu.Items.Add('-')
@@ -198,7 +198,7 @@ function Hide-ToTray {
     [QsMem]::Trim()
     if (-not $script:trayHintShown) {
         $script:trayHintShown = $true
-        $script:tray.ShowBalloonTip(4000, 'Quest Spoofer', (L 'Toujours actif ici. Double-clic pour rouvrir.'), [Windows.Forms.ToolTipIcon]::Info)
+        $script:tray.ShowBalloonTip(4000, 'Quest Farm', (L 'Toujours actif ici. Double-clic pour rouvrir.'), [Windows.Forms.ToolTipIcon]::Info)
     }
 }
 
@@ -237,8 +237,8 @@ $script:stubSize = 'm'          # s, m, l
 $script:stubCorner = 'br'       # br, bl, tr, tl
 $script:tab = 'all'
 $script:page = 'sessions'
-$script:accent = 'indigo'
-$script:accentHex = '#7C83F7'
+$script:accent = 'blood'
+$script:accentHex = '#E8335A'
 $script:widgetWanted = $false
 $script:widgetPos = $null
 $script:endT = @{ At = $null; OnRotationEnd = $false; Action = 'none' }
@@ -382,9 +382,9 @@ function Add-Playtime([QsSession]$s, [double]$sec) {
 $script:discordUp = [QsDiscord]::IsRunning()
 
 function Update-Pill {
-    if (-not $script:allGames) { $s = @('Synchronisation', '#9FA0A8', 'Chargement du catalogue des jeux') }
-    elseif ($script:discordUp) { $s = @('Discord actif', '#3FB37F', 'Discord est ouvert : les spoofs sont pris en compte') }
-    else { $s = @('Discord fermé', '#E5B33A', 'Discord est fermé : rien ne compte tant qu''il n''est pas ouvert') }
+    if (-not $script:allGames) { $s = @('Synchronisation', '#C7A9B6', 'Chargement du catalogue des jeux') }
+    elseif ($script:discordUp) { $s = @('Discord actif', '#7FD8C9', 'Discord est ouvert : les spoofs sont pris en compte') }
+    else { $s = @('Discord fermé', '#F5B971', 'Discord est fermé : rien ne compte tant qu''il n''est pas ouvert') }
     # Rectangle teinte de la couleur de l'etat (fond 13 %, bordure 33 %)
     $hex = $s[1].Substring(1)
     $PillText.Text = L $s[0]
@@ -399,7 +399,7 @@ function Update-Pill {
 function Set-SegStyle($btn, [bool]$on) {
     $btn.Background  = Brush $(if ($on) { '#26' + $script:accentHex.Substring(1) } else { '#00000000' })
     $btn.BorderBrush = Brush '#00000000'
-    $btn.Foreground  = Brush $(if ($on) { $script:accentHex } else { '#9FA0A8' })
+    $btn.Foreground  = Brush $(if ($on) { $script:accentHex } else { '#C7A9B6' })
 }
 
 # ============================================================
@@ -656,19 +656,19 @@ function Update-Rot {
         $cur = 'Jeu {0}/{1} · {2}' -f ($script:rot.Index + 1), $n, $script:rotItems[$script:rot.Index].Name
         if ($script:rot.UserPaused) {
             $RotInfo.Text = L "En pause · $cur"
-            $RotInfo.Foreground = Brush '#E5B33A'
+            $RotInfo.Foreground = Brush '#F5B971'
         } elseif ($script:rot.Paused) {
             $RotInfo.Text = L "En pause (Discord fermé) · $cur"
-            $RotInfo.Foreground = Brush '#E5B33A'
+            $RotInfo.Foreground = Brush '#F5B971'
         } else {
             $RotInfo.Text = L $cur
-            $RotInfo.Foreground = Brush '#ECECEE'
+            $RotInfo.Foreground = Brush '#F7ECF1'
         }
         $BtnRotate.Content = L 'Arrêter'
         $RotCountdown.Text = Format-Clock (Get-RotRemaining)
     } else {
         $RotInfo.Text = L $(if ($n) { "$n jeu(x) en file · $(Get-RotMinutes) min chacun" } else { 'Ajoute des jeux à la file, puis démarre.' })
-        $RotInfo.Foreground = Brush '#9FA0A8'
+        $RotInfo.Foreground = Brush '#C7A9B6'
         $BtnRotate.Content = L 'Démarrer'
         $RotCountdown.Text = '--:--'
         $rotScale.ScaleX = 0
@@ -749,7 +749,7 @@ function Step-Rotation([int]$RemainingSec = 0) {
 function Switch-RotationPause {
     if (-not $script:rot.On) {
         Set-Status 'Aucune rotation en cours' 'warn'
-        Notify 'Quest Spoofer' 'Aucune rotation en cours.'
+        Notify 'Quest Farm' 'Aucune rotation en cours.'
         return
     }
     if ($script:rot.UserPaused) {
@@ -852,10 +852,10 @@ function Update-QuestClock {
     $QuestPct.Text = '{0:N0} %' -f ($done * 100)
     if ($script:qst.Paused) {
         $QuestInfo.Text = L "En pause (Discord fermé) · $($script:qst.Game.Name)"
-        $QuestInfo.Foreground = Brush '#E5B33A'
+        $QuestInfo.Foreground = Brush '#F5B971'
     } else {
         $QuestInfo.Text = L "En cours · $($script:qst.Game.Name)"
-        $QuestInfo.Foreground = Brush '#9FA0A8'
+        $QuestInfo.Foreground = Brush '#C7A9B6'
     }
 }
 
@@ -944,7 +944,7 @@ function Invoke-EndAction([string]$reason) {
             Set-Status "$reason : arrêt du PC dans 60 s (Win+R puis « shutdown /a » pour annuler)" 'warn'
             Notify 'Arrêt du PC dans 60 s' 'Pour annuler : Win+R puis « shutdown /a ».'
             Start-Process -FilePath (Join-Path $env:WINDIR 'System32\shutdown.exe') -WindowStyle Hidden `
-                -ArgumentList '/s /t 60 /c "Quest Spoofer : arret programme. Win+R puis shutdown /a pour annuler."'
+                -ArgumentList '/s /t 60 /c "Quest Farm : arret programme. Win+R puis shutdown /a pour annuler."'
         }
         default {
             Set-Status "$reason : tout est arrêté" 'ok'
@@ -1014,13 +1014,13 @@ function Read-Text([string]$title, [string]$prompt, [string]$default) {
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Width="400" SizeToContent="Height" WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner" ShowInTaskbar="False" FontFamily="Segoe UI Variable Text, Segoe UI">
-  <Border Margin="12" CornerRadius="14" Background="#18191C" BorderBrush="#2A2B30" BorderThickness="1" Padding="20,18">
+  <Border Margin="12" CornerRadius="14" Background="#1C0D18" BorderBrush="#3B2237" BorderThickness="1" Padding="20,18">
     <Border.Effect><DropShadowEffect BlurRadius="22" ShadowDepth="0" Opacity="0.6" Color="Black"/></Border.Effect>
     <StackPanel>
-      <TextBlock x:Name="T" Foreground="#ECECEE" FontSize="15" FontWeight="SemiBold"/>
-      <TextBlock x:Name="P" Foreground="#9FA0A8" FontSize="12" Margin="0,4,0,12" TextWrapping="Wrap"/>
-      <Border Background="#1D1E22" BorderBrush="#2E2F35" BorderThickness="1" CornerRadius="8" Height="38">
-        <TextBox x:Name="I" Background="Transparent" BorderThickness="0" Foreground="#ECECEE" CaretBrush="#ECECEE" FontSize="13.5"
+      <TextBlock x:Name="T" Foreground="#F7ECF1" FontSize="15" FontWeight="SemiBold"/>
+      <TextBlock x:Name="P" Foreground="#C7A9B6" FontSize="12" Margin="0,4,0,12" TextWrapping="Wrap"/>
+      <Border Background="#241323" BorderBrush="#46283F" BorderThickness="1" CornerRadius="8" Height="38">
+        <TextBox x:Name="I" Background="Transparent" BorderThickness="0" Foreground="#F7ECF1" CaretBrush="#F7ECF1" FontSize="13.5"
                  VerticalContentAlignment="Center" Padding="10,0"/>
       </Border>
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
@@ -1070,7 +1070,7 @@ function Export-Queue {
     if (-not $script:rotItems.Count) { return }
     $dlg = New-Object Microsoft.Win32.SaveFileDialog
     $dlg.Title = L 'Exporter la file de rotation'
-    $dlg.Filter = 'File Quest Spoofer (*.json)|*.json'
+    $dlg.Filter = 'File Quest Farm (*.json)|*.json'
     $dlg.FileName = 'rotation-quest-spoofer.json'
     if (-not $dlg.ShowDialog($win)) { return }
     $obj = [ordered]@{ app = 'QuestSpoofer'; version = 1; games = @($script:rotItems | ForEach-Object { [ordered]@{ id = $_.Id; name = $_.Name } }) }
@@ -1081,7 +1081,7 @@ function Export-Queue {
 function Import-QueueFile {
     $dlg = New-Object Microsoft.Win32.OpenFileDialog
     $dlg.Title = L 'Importer une file de rotation'
-    $dlg.Filter = 'File Quest Spoofer (*.json)|*.json|Tous les fichiers (*.*)|*.*'
+    $dlg.Filter = 'File Quest Farm (*.json)|*.json|Tous les fichiers (*.*)|*.*'
     if (-not $dlg.ShowDialog($win)) { return }
     $obj = Read-Json $dlg.FileName
     if (-not $obj -or -not $obj.games) { Set-Status 'Fichier invalide : aucune liste de jeux trouvée' 'err'; return }
@@ -1189,10 +1189,10 @@ function Update-StatsPage {
         $bar.CornerRadius = New-Object Windows.CornerRadius 4, 4, 1, 1
         $bar.Height = [Math]::Max(3, $v / $max * 100)
         if ($v -gt 0) { $bar.Background = $accentBrush; $bar.Opacity = $(if ($isToday) { 1 } else { 0.6 }) }
-        else { $bar.Background = Brush '#2A2B30' }
+        else { $bar.Background = Brush '#3B2237' }
         $bar.ToolTip = '{0:ddd dd/MM} · {1}' -f $d, (Format-Duration $v)
         [void]$cell.Children.Add($bar)
-        $lab = New-Text $d.ToString('dd') 10.5 $(if ($isToday) { $script:accentHex } else { '#6B6C74' })
+        $lab = New-Text $d.ToString('dd') 10.5 $(if ($isToday) { $script:accentHex } else { '#8A6B76' })
         $lab.HorizontalAlignment = 'Center'
         $lab.Margin = New-Object Windows.Thickness 0, 5, 0, 0
         [Windows.Controls.Grid]::SetRow($lab, 1)
@@ -1205,7 +1205,7 @@ function Update-StatsPage {
     $TopGames.Children.Clear()
     $top = @($script:history.GetEnumerator() | Where-Object { $_.Value.sec -ge 60 } | Sort-Object { $_.Value.sec } -Descending | Select-Object -First 8)
     if (-not $top.Count) {
-        [void]$TopGames.Children.Add((New-Text (L "Aucune donnée pour l'instant : lance un jeu avec Discord ouvert.") 12 '#6B6C74'))
+        [void]$TopGames.Children.Add((New-Text (L "Aucune donnée pour l'instant : lance un jeu avec Discord ouvert.") 12 '#8A6B76'))
         return
     }
     $maxTop = $top[0].Value.sec
@@ -1214,11 +1214,11 @@ function Update-StatsPage {
         $row = New-Object Windows.Controls.StackPanel
         $row.Margin = New-Object Windows.Thickness 0, 0, 0, 10
         $head = New-Object Windows.Controls.Grid
-        $name = New-Text $e.name 13 '#ECECEE'
+        $name = New-Text $e.name 13 '#F7ECF1'
         $name.Margin = New-Object Windows.Thickness 0, 0, 90, 0
         [void]$head.Children.Add($name)
         $ok = $e.sec -ge $PlayedMinutes * 60
-        $dur = New-Text $(if ($ok) { '✓ ' + (Format-Duration $e.sec) } else { Format-Duration $e.sec }) 12 $(if ($ok) { '#3FB37F' } else { '#9FA0A8' })
+        $dur = New-Text $(if ($ok) { '✓ ' + (Format-Duration $e.sec) } else { Format-Duration $e.sec }) 12 $(if ($ok) { '#7FD8C9' } else { '#C7A9B6' })
         $dur.HorizontalAlignment = 'Right'
         [void]$head.Children.Add($dur)
         [void]$row.Children.Add($head)
@@ -1228,7 +1228,7 @@ function Update-StatsPage {
         $c1 = New-Object Windows.Controls.ColumnDefinition; $c1.Width = New-Object Windows.GridLength ([Math]::Max(0.01, $e.sec)), ([Windows.GridUnitType]::Star)
         $c2 = New-Object Windows.Controls.ColumnDefinition; $c2.Width = New-Object Windows.GridLength ([Math]::Max(0.01, $maxTop - $e.sec)), ([Windows.GridUnitType]::Star)
         [void]$track.ColumnDefinitions.Add($c1); [void]$track.ColumnDefinitions.Add($c2)
-        $bg = New-Object Windows.Controls.Border; $bg.Background = Brush '#2A2B30'; $bg.CornerRadius = New-Object Windows.CornerRadius 2
+        $bg = New-Object Windows.Controls.Border; $bg.Background = Brush '#3B2237'; $bg.CornerRadius = New-Object Windows.CornerRadius 2
         [Windows.Controls.Grid]::SetColumnSpan($bg, 2)
         $fg = New-Object Windows.Controls.Border; $fg.Background = $accentBrush; $fg.CornerRadius = New-Object Windows.CornerRadius 2
         [void]$track.Children.Add($bg); [void]$track.Children.Add($fg)
@@ -1303,7 +1303,7 @@ function Update-Widget {
         $sub = if ($script:sessions.Count -gt 1) { "Session · +$($script:sessions.Count - 1) autre(s)" } else { 'Session en cours' }
         $time = $s.Elapsed
     } else {
-        $name = 'Aucune session'; $sub = 'Quest Spoofer'; $time = '--:--'
+        $name = 'Aucune session'; $sub = 'Quest Farm'; $time = '--:--'
     }
     $script:wg.WName.Text = L $name
     $script:wg.WSub.Text = L $sub
@@ -1333,7 +1333,7 @@ function Set-Autostart([bool]$on) {
             Set-ItemProperty -Path $RunKey -Name 'QuestSpoofer' -Value ('"{0}" {1} -StartHidden' -f $Conhost, $LaunchArgs)
             # Au cas ou il aurait ete desactive dans le Gestionnaire des taches
             Remove-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run' -Name 'QuestSpoofer' -ErrorAction SilentlyContinue
-            Set-Status "Quest Spoofer démarrera avec Windows, dans la zone de notification" 'ok'
+            Set-Status "Quest Farm démarrera avec Windows, dans la zone de notification" 'ok'
         } else {
             Remove-ItemProperty -Path $RunKey -Name 'QuestSpoofer' -ErrorAction SilentlyContinue
             Set-Status 'Lancement avec Windows désactivé'
@@ -1350,7 +1350,7 @@ function New-DesktopShortcut {
         $lnk.Arguments = $LaunchArgs
         $lnk.WorkingDirectory = $root
         $lnk.IconLocation = "$IcoPath,0"
-        $lnk.Description = 'Quest Spoofer'
+        $lnk.Description = 'Quest Farm'
         $lnk.WindowStyle = 7
         $lnk.Save()
         [void][Runtime.InteropServices.Marshal]::ReleaseComObject($sh)
@@ -1380,10 +1380,10 @@ foreach ($k in @('accent') + @($Accents.Keys)) {
     $sw.Tag = $k
     if ($k -eq 'accent') {
         $sw.ToolTip = L "Comme l'accent"
-        $sw.Background = Brush '#2A2B30'
+        $sw.Background = Brush '#3B2237'
         $t = New-Object Windows.Controls.TextBlock
         $t.Text = 'A'; $t.FontSize = 11; $t.FontWeight = 'SemiBold'
-        $t.Foreground = Brush '#ECECEE'
+        $t.Foreground = Brush '#F7ECF1'
         $t.HorizontalAlignment = 'Center'; $t.VerticalAlignment = 'Center'
         $sw.Child = $t
     } else {
@@ -1395,7 +1395,7 @@ foreach ($k in @('accent') + @($Accents.Keys)) {
 }
 
 function Update-StubUi {
-    foreach ($sw in $StubColorList.Children) { $sw.BorderBrush = Brush $(if ($sw.Tag -eq $script:stubColor) { '#ECECEE' } else { '#00000000' }) }
+    foreach ($sw in $StubColorList.Children) { $sw.BorderBrush = Brush $(if ($sw.Tag -eq $script:stubColor) { '#F7ECF1' } else { '#00000000' }) }
     $StubColorName.Text = L $(if ($script:stubColor -eq 'accent') { "Comme l'accent ($($Accents[$script:accent][1]))" } else { $Accents[$script:stubColor][1] })
     foreach ($k in $StubSizes.Keys) { Set-SegStyle $StubSizes[$k] ($k -eq $script:stubSize) }
     foreach ($k in $StubCorners.Keys) { Set-SegStyle $StubCorners[$k][0] ($k -eq $script:stubCorner) }
@@ -1431,7 +1431,7 @@ function Show-StubPreview {
         $exe = Join-Path $dir 'apercu.exe'
         if (-not [IO.File]::Exists($exe)) { [IO.File]::Copy($blank, $exe, $true) }
         $g = $Games.SelectedItem
-        $name = if ($g) { $g.Name } else { L 'Aperçu · Quest Spoofer' }
+        $name = if ($g) { $g.Name } else { L 'Aperçu · Quest Farm' }
         $icon = if ($g) { $g.IconUrl } else { $null }
         $psi = New-Object Diagnostics.ProcessStartInfo $exe
         # Toujours visible pour l'apercu, meme si les faux jeux sont regles en "reduites"
@@ -1461,7 +1461,7 @@ foreach ($k in $Accents.Keys) {
 }
 
 function Set-Accent([string]$key) {
-    if (-not $Accents.Contains($key)) { $key = 'indigo' }
+    if (-not $Accents.Contains($key)) { $key = 'blood' }
     $a = $Accents[$key]
     $script:accent = $key
     $script:accentHex = $a[0]
@@ -1474,7 +1474,7 @@ function Set-Accent([string]$key) {
     $win.Resources['AccentSoft'] = $soft.psobject.BaseObject
     if ($script:widget) { $script:wg.WInitial.Foreground = $win.Resources['Accent'] }
     $AccentName.Text = L $a[1]
-    foreach ($sw in $AccentList.Children) { $sw.BorderBrush = Brush $(if ($sw.Tag -eq $key) { '#ECECEE' } else { '#00000000' }) }
+    foreach ($sw in $AccentList.Children) { $sw.BorderBrush = Brush $(if ($sw.Tag -eq $key) { '#F7ECF1' } else { '#00000000' }) }
     Update-Pill
     Update-TabStyles
     Update-PageStyles
@@ -1529,7 +1529,7 @@ function Invoke-Diagnostic {
         $exe = Join-Path $diagDir 'diag_test.exe'
         [IO.File]::Copy($blank, $exe, $true)
         $psi = New-Object Diagnostics.ProcessStartInfo $exe
-        $psi.Arguments = '"Diagnostic Quest Spoofer" 0 min'
+        $psi.Arguments = '"Diagnostic Quest Farm" 0 min'
         $psi.UseShellExecute = $false
         $sw = [Diagnostics.Stopwatch]::StartNew()
         $p = [Diagnostics.Process]::Start($psi)
@@ -1558,7 +1558,7 @@ function Invoke-Diagnostic {
     & $add 'ok' "Mémoire utilisée par l'outil : $mem Mo."
 
     $glyph = @{ ok = [char]0xE73E; warn = [char]0xE7BA; err = [char]0xE711 }
-    $color = @{ ok = '#3FB37F'; warn = '#E5B33A'; err = '#E5484D' }
+    $color = @{ ok = '#7FD8C9'; warn = '#F5B971'; err = '#FF4D6D' }
     foreach ($r in $res) {
         $g = New-Object Windows.Controls.Grid
         $g.Margin = New-Object Windows.Thickness 0, 3, 0, 3
@@ -1567,7 +1567,7 @@ function Invoke-Diagnostic {
         $i = New-Text ([string]$glyph[$r[0]]) 11 $color[$r[0]]
         $i.FontFamily = $win.Resources['Icons']
         $i.Margin = New-Object Windows.Thickness 0, 2, 0, 0
-        $t = New-Text (L $r[1]) 12 '#C8C9CF'
+        $t = New-Text (L $r[1]) 12 '#E3CBD6'
         $t.TextWrapping = 'Wrap'
         [Windows.Controls.Grid]::SetColumn($t, 1)
         [void]$g.Children.Add($i); [void]$g.Children.Add($t)
@@ -1880,14 +1880,14 @@ function Update-RemoteUi {
     $last = $script:remote.LastSeen
     if ($last -gt (Get-Date).AddSeconds(-10)) {
         $RemoteStatus.Text = L 'Téléphone connecté · en direct'
-        $RemoteStatus.Foreground = Brush '#3FB37F'
+        $RemoteStatus.Foreground = Brush '#7FD8C9'
     } elseif ($count -gt 0) {
         $ago = if ($last -gt [DateTime]::MinValue) { Format-Ago ((Get-Date) - $last) } else { '—' }
         $RemoteStatus.Text = L "$count téléphone(s) appairé(s) · dernière visite il y a $ago"
-        $RemoteStatus.Foreground = Brush '#9FA0A8'
+        $RemoteStatus.Foreground = Brush '#C7A9B6'
     } else {
         $RemoteStatus.Text = L "Aucun téléphone appairé pour l'instant"
-        $RemoteStatus.Foreground = Brush '#9FA0A8'
+        $RemoteStatus.Foreground = Brush '#C7A9B6'
     }
 }
 
@@ -1969,7 +1969,7 @@ function Update-AllTexts {
     foreach ($sw in $StubColorList.Children) { $sw.ToolTip = if ($sw.Tag -eq 'accent') { L "Comme l'accent" } else { L $Accents[$sw.Tag][1] } }
     foreach ($s in $script:sessions) { $s.KindLabel = L $s.Kind }
     $Active.Items.Refresh()
-    $trayLabels = @('Ouvrir Quest Spoofer', 'Mini-widget', 'Pause / reprise de la rotation', '-', 'Quitter (arrête tout)')
+    $trayLabels = @('Ouvrir Quest Farm', 'Mini-widget', 'Pause / reprise de la rotation', '-', 'Quitter (arrête tout)')
     for ($i = 0; $i -lt $trayLabels.Count; $i++) { if ($trayLabels[$i] -ne '-') { $trayMenu.Items[$i].Text = L $trayLabels[$i] } }
     $DiagList.Children.Clear()
     if ($script:page -eq 'stats') { Update-StatsPage }

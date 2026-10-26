@@ -275,17 +275,16 @@ public static class QsIcon {
         return p;
     }
 
-    // Etoile a 4 branches (l'idee de "quete")
-    static GraphicsPath Sparkle(float cx, float cy, float r) {
+    // Coeur dans un carre (x, y, cote)
+    static GraphicsPath Heart(float x, float y, float s) {
         var p = new GraphicsPath();
-        float i = r * 0.32f;
-        p.AddPolygon(new[] {
-            new PointF(cx, cy - r), new PointF(cx + i, cy - i), new PointF(cx + r, cy), new PointF(cx + i, cy + i),
-            new PointF(cx, cy + r), new PointF(cx - i, cy + i), new PointF(cx - r, cy), new PointF(cx - i, cy - i) });
+        p.AddBezier(x + s / 2, y + s, x - s * 0.1f, y + s * 0.55f, x, y - s * 0.05f, x + s / 2, y + s * 0.28f);
+        p.AddBezier(x + s / 2, y + s * 0.28f, x + s, y - s * 0.05f, x + s * 1.1f, y + s * 0.55f, x + s / 2, y + s);
+        p.CloseFigure();
         return p;
     }
 
-    // Logo : carre arrondi indigo -> violet, manette blanche, petite etoile doree
+    // Logo : carre arrondi rouge sang -> bordeaux, manette blanche, petit coeur sakura
     static Bitmap Draw(int size) {
         var bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         float s = size;
@@ -295,7 +294,7 @@ public static class QsIcon {
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
             var box = new RectangleF(0, 0, s - 1, s - 1);
             using (var path = RoundRect(box, s * 0.23f)) {
-                using (var br = new LinearGradientBrush(box, Color.FromArgb(139, 147, 255), Color.FromArgb(108, 76, 245), 50f))
+                using (var br = new LinearGradientBrush(box, Color.FromArgb(240, 71, 107), Color.FromArgb(124, 16, 41), 50f))
                     g.FillPath(br, path);
                 // Reflet doux sur la moitie haute
                 g.SetClip(path);
@@ -310,14 +309,15 @@ public static class QsIcon {
             using (var f = new Font(fam, s * 0.50f, GraphicsUnit.Pixel))
             using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }) {
                 var r = new RectangleF(0, s * 0.04f, s, s);
-                using (var sh = new SolidBrush(Color.FromArgb(60, 30, 20, 90)))
+                using (var sh = new SolidBrush(Color.FromArgb(70, 60, 0, 20)))
                     g.DrawString(glyph, f, sh, new RectangleF(r.X, r.Y + s * 0.025f, r.Width, r.Height), sf);
                 g.DrawString(glyph, f, Brushes.White, r, sf);
             }
-            // Etoile doree en haut a droite
+            // Coeur sakura en haut a droite, cerne de la couleur du fond
             if (size >= 24)
-                using (var star = Sparkle(s * 0.775f, s * 0.225f, s * 0.13f))
-                using (var gold = new SolidBrush(Color.FromArgb(255, 205, 86))) g.FillPath(gold, star);
+                using (var heart = Heart(s * 0.635f, s * 0.085f, s * 0.29f))
+                using (var ring = new Pen(Color.FromArgb(124, 16, 41), s * 0.035f))
+                using (var pink = new SolidBrush(Color.FromArgb(255, 157, 198))) { g.DrawPath(ring, heart); g.FillPath(pink, heart); }
         }
         return bmp;
     }

@@ -37,11 +37,11 @@ class StubForm : Form {
     bool hoverClose;
     Rectangle closeRect;
 
-    static readonly Color Bg = Color.FromArgb(24, 25, 28);
-    static readonly Color TextC = Color.FromArgb(236, 236, 238);
-    static readonly Color MutedC = Color.FromArgb(159, 160, 168);
-    static readonly Color DimC = Color.FromArgb(107, 108, 116);
-    static readonly Color GreenC = Color.FromArgb(63, 179, 127);
+    static readonly Color Bg = Color.FromArgb(28, 13, 24);
+    static readonly Color TextC = Color.FromArgb(247, 236, 241);
+    static readonly Color MutedC = Color.FromArgb(199, 169, 182);
+    static readonly Color DimC = Color.FromArgb(138, 107, 118);
+    static readonly Color SakuraC = Color.FromArgb(255, 157, 198);
 
     public StubForm(string title, Color accent, string size, float dpi, string iconUrl, string lang,
                     string corner, int slot, string mode, string cfgPath) {
@@ -164,9 +164,18 @@ class StubForm : Form {
 
     protected override void OnHandleCreated(EventArgs e) {
         base.OnHandleCreated(e);
-        int round = 2, border = 0x00352F2E;   // coins arrondis Windows 11, bordure #2E2F35
+        int round = 2, border = 0x003F2846;   // coins arrondis Windows 11, bordure #46283F
         DwmSetWindowAttribute(Handle, 33, ref round, 4);
         DwmSetWindowAttribute(Handle, 34, ref border, 4);
+    }
+
+    // Coeur dans un carre (x, y, cote)
+    static GraphicsPath Heart(float x, float y, float s) {
+        var p = new GraphicsPath();
+        p.AddBezier(x + s / 2, y + s, x - s * 0.1f, y + s * 0.55f, x, y - s * 0.05f, x + s / 2, y + s * 0.28f);
+        p.AddBezier(x + s / 2, y + s * 0.28f, x + s, y - s * 0.05f, x + s * 1.1f, y + s * 0.55f, x + s / 2, y + s);
+        p.CloseFigure();
+        return p;
     }
 
     static GraphicsPath Round(RectangleF r, float rad) {
@@ -187,6 +196,10 @@ class StubForm : Form {
         int w = ClientSize.Width, h = ClientSize.Height;
         float pad = 14 * k;
         float sz = h - 2 * pad - 3 * k;
+
+        // Halo de la couleur d'accent a gauche (fond aubergine teinte de sang)
+        using (var glow = new LinearGradientBrush(new RectangleF(0, 0, w * 0.75f, h), Color.FromArgb(46, accent), Color.FromArgb(0, accent), 0f))
+            g.FillRectangle(glow, 0, 0, w * 0.75f, h);
 
         // Icone du jeu (ou initiale sur fond teinte)
         var ic = new RectangleF(pad, pad, sz, sz);
@@ -215,7 +228,7 @@ class StubForm : Form {
         // Etat + chrono
         float y = pad + 25 * k;
         float dot = 7 * k;
-        using (var b = new SolidBrush(GreenC)) g.FillEllipse(b, x, y + 5 * k, dot, dot);
+        using (var b = new SolidBrush(SakuraC)) using (var hp = Heart(x - 0.5f * k, y + 4 * k, dot + 1 * k)) g.FillPath(b, hp);
         TimeSpan t = DateTime.Now - start;
         string s = string.Format("{0}  ·  {1:00}:{2:00}:{3:00}", running, (int)t.TotalHours, t.Minutes, t.Seconds);
         using (var f = new Font("Segoe UI", 12.5f * k, GraphicsUnit.Pixel))
@@ -223,12 +236,13 @@ class StubForm : Form {
             g.DrawString(s, f, b, x + dot + 7 * k, y);
 
         // Ligne de couleur en bas
-        using (var b = new SolidBrush(accent)) g.FillRectangle(b, 0, h - 3 * k, w, 3 * k);
+        using (var b = new LinearGradientBrush(new RectangleF(0, 0, w, 3 * k), accent, Color.FromArgb(40, accent), 0f))
+            g.FillRectangle(b, 0, h - 3 * k, w, 3 * k);
 
         // Petite croix (fermer = arreter ce spoof)
         closeRect = new Rectangle((int)(w - 30 * k), (int)(9 * k), (int)(21 * k), (int)(21 * k));
         if (hoverClose)
-            using (var b = new SolidBrush(Color.FromArgb(48, 49, 55)))
+            using (var b = new SolidBrush(Color.FromArgb(59, 34, 55)))
             using (var p = Round(closeRect, 5 * k)) g.FillPath(b, p);
         using (var pen = new Pen(hoverClose ? TextC : DimC, 1.4f * k)) {
             float c = 4.5f * k, cx = closeRect.X + closeRect.Width / 2f, cy = closeRect.Y + closeRect.Height / 2f;
@@ -263,7 +277,7 @@ static class P {
     static void Main(string[] a) {
         string title = "Game", mode = "show", size = "m", corner = "br", icon = null, lang = "fr", cfg = null;
         int slot = 0;
-        Color color = Color.FromArgb(124, 131, 247);
+        Color color = Color.FromArgb(232, 51, 90);
 
         if (a.Length > 0 && !a[0].StartsWith("--")) {
             title = a[0];

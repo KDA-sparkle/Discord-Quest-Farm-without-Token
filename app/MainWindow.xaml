@@ -1,7 +1,7 @@
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Quest Spoofer" Width="1092" Height="792" MinWidth="932" MinHeight="672"
-        WindowStyle="None" Background="#111214"
+        Title="Quest Farm" Width="1092" Height="792" MinWidth="932" MinHeight="672"
+        WindowStyle="None" Background="#14080F"
         ResizeMode="CanResize" WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI Variable Text, Segoe UI" FontSize="13" UseLayoutRounding="True"
         TextOptions.TextFormattingMode="Ideal">
@@ -11,22 +11,26 @@
 
   <Window.Resources>
     <!-- Palette neutre ; "Accent" / "Cyan" / "AccentSoft" sont remplacees par le code (couleur d'accent) -->
-    <SolidColorBrush x:Key="Bg"       Color="#111214"/>
-    <SolidColorBrush x:Key="Surface"  Color="#17181B"/>
-    <SolidColorBrush x:Key="Surface2" Color="#1D1E22"/>
-    <SolidColorBrush x:Key="Line"     Color="#25262B"/>
-    <SolidColorBrush x:Key="Text"     Color="#ECECEE"/>
-    <SolidColorBrush x:Key="Muted"    Color="#9FA0A8"/>
-    <SolidColorBrush x:Key="Dim"      Color="#6B6C74"/>
-    <SolidColorBrush x:Key="Green"    Color="#3FB37F"/>
-    <SolidColorBrush x:Key="Red"      Color="#E5484D"/>
-    <SolidColorBrush x:Key="Gold"     Color="#E5B33A"/>
-    <SolidColorBrush x:Key="Accent"     Color="#7B83EB"/>
-    <SolidColorBrush x:Key="Cyan"       Color="#7B83EB"/>
-    <SolidColorBrush x:Key="AccentSoft" Color="#267B83EB"/>
+    <SolidColorBrush x:Key="Bg"       Color="#14080F"/>
+    <SolidColorBrush x:Key="Surface"  Color="#1C0D18"/>
+    <SolidColorBrush x:Key="Surface2" Color="#241323"/>
+    <SolidColorBrush x:Key="Line"     Color="#3A1B33"/>
+    <SolidColorBrush x:Key="Text"     Color="#F7ECF1"/>
+    <SolidColorBrush x:Key="Muted"    Color="#C7A9B6"/>
+    <SolidColorBrush x:Key="Dim"      Color="#8A6B76"/>
+    <SolidColorBrush x:Key="Green"    Color="#7FD8C9"/>
+    <SolidColorBrush x:Key="Red"      Color="#FF4D6D"/>
+    <SolidColorBrush x:Key="Gold"     Color="#F5B971"/>
+    <SolidColorBrush x:Key="Accent"     Color="#E8335A"/>
+    <SolidColorBrush x:Key="Cyan"       Color="#E8335A"/>
+    <SolidColorBrush x:Key="AccentSoft" Color="#26E8335A"/>
     <FontFamily x:Key="Mono">Cascadia Mono, Consolas</FontFamily>
     <FontFamily x:Key="Icons">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
     <FontFamily x:Key="Display">Segoe UI Variable Display, Segoe UI</FontFamily>
+    <!-- Titres et grands chiffres : serif fine, a la Cormorant (theme yandere) -->
+    <FontFamily x:Key="Serif">Palatino Linotype, Georgia</FontFamily>
+    <SolidColorBrush x:Key="Sakura" Color="#FF9DC6"/>
+    <SolidColorBrush x:Key="Mint"   Color="#7FD8C9"/>
 
     <!-- Scrollbar fine -->
     <Style TargetType="ScrollBar">
@@ -41,9 +45,9 @@
                 <Thumb>
                   <Thumb.Template>
                     <ControlTemplate TargetType="Thumb">
-                      <Border x:Name="t" Background="#2C2D33" CornerRadius="3"/>
+                      <Border x:Name="t" Background="#42253D" CornerRadius="3"/>
                       <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="t" Property="Background" Value="#3A3B42"/></Trigger>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="t" Property="Background" Value="#5A3150"/></Trigger>
                       </ControlTemplate.Triggers>
                     </ControlTemplate>
                   </Thumb.Template>
@@ -56,9 +60,9 @@
     </Style>
 
     <Style TargetType="ToolTip">
-      <Setter Property="Background" Value="#202126"/>
-      <Setter Property="Foreground" Value="#ECECEE"/>
-      <Setter Property="BorderBrush" Value="#2E2F35"/>
+      <Setter Property="Background" Value="#2B1628"/>
+      <Setter Property="Foreground" Value="#F7ECF1"/>
+      <Setter Property="BorderBrush" Value="#46283F"/>
       <Setter Property="FontSize" Value="12"/>
       <Setter Property="Padding" Value="10,6"/>
     </Style>
@@ -77,14 +81,14 @@
         <Setter.Value>
           <ControlTemplate TargetType="Button">
             <Border x:Name="b" CornerRadius="8">
-              <Border.Background><SolidColorBrush Color="#00232428"/></Border.Background>
+              <Border.Background><SolidColorBrush Color="#002E1A2B"/></Border.Background>
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Text}"/>
-                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF232428" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
-                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00232428" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF2E1A2B" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#002E1A2B" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -96,14 +100,14 @@
         <Setter.Value>
           <ControlTemplate TargetType="Button">
             <Border x:Name="b" CornerRadius="8">
-              <Border.Background><SolidColorBrush Color="#00E5484D"/></Border.Background>
+              <Border.Background><SolidColorBrush Color="#00FF4D6D"/></Border.Background>
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="White"/>
-                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FFE5484D" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
-                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00E5484D" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FFFF4D6D" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00FF4D6D" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -123,6 +127,16 @@
           <ControlTemplate TargetType="Button">
             <Grid>
               <Border CornerRadius="8" Background="{DynamicResource Accent}"/>
+              <!-- Ombre interne vers le bas : effet goutte de sang -->
+              <Border CornerRadius="8" IsHitTestVisible="False">
+                <Border.Background>
+                  <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#26FFFFFF" Offset="0"/>
+                    <GradientStop Color="#00FFFFFF" Offset="0.45"/>
+                    <GradientStop Color="#38000000" Offset="1"/>
+                  </LinearGradientBrush>
+                </Border.Background>
+              </Border>
               <Border x:Name="veil" CornerRadius="8" Background="White" Opacity="0" IsHitTestVisible="False"/>
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
@@ -151,13 +165,13 @@
         <Setter.Value>
           <ControlTemplate TargetType="Button">
             <Border x:Name="b" CornerRadius="8" BorderBrush="{StaticResource Line}" BorderThickness="1" Padding="{TemplateBinding Padding}">
-              <Border.Background><SolidColorBrush Color="#FF1D1E22"/></Border.Background>
+              <Border.Background><SolidColorBrush Color="#FF241323"/></Border.Background>
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF26272C" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
-                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF1D1E22" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF331D30" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF241323" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
               </Trigger>
               <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.4"/></Trigger>
             </ControlTemplate.Triggers>
@@ -190,13 +204,13 @@
         <Setter.Value>
           <ControlTemplate TargetType="Button">
             <Border x:Name="b" CornerRadius="8" BorderBrush="{StaticResource Line}" BorderThickness="1">
-              <Border.Background><SolidColorBrush Color="#00E5484D"/></Border.Background>
+              <Border.Background><SolidColorBrush Color="#00FF4D6D"/></Border.Background>
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#1FE5484D" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
-                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00E5484D" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#1FFF4D6D" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00FF4D6D" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
               </Trigger>
               <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.35"/></Trigger>
             </ControlTemplate.Triggers>
@@ -239,14 +253,14 @@
         <Setter.Value>
           <ControlTemplate TargetType="Button">
             <Border x:Name="b" CornerRadius="8">
-              <Border.Background><SolidColorBrush Color="#00E5484D"/></Border.Background>
+              <Border.Background><SolidColorBrush Color="#00FF4D6D"/></Border.Background>
               <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Red}"/>
-                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#1FE5484D" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
-                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00E5484D" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#1FFF4D6D" Duration="0:0:0.15"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00FF4D6D" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -270,7 +284,7 @@
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="b" Property="Background" Value="#2E2F35"/>
+                <Setter TargetName="b" Property="Background" Value="#46283F"/>
                 <Setter Property="Foreground" Value="{StaticResource Text}"/>
               </Trigger>
             </ControlTemplate.Triggers>
@@ -326,7 +340,7 @@
         <Setter.Value>
           <ControlTemplate TargetType="CheckBox">
             <Grid Width="38" Height="22" Background="Transparent">
-              <Border x:Name="track" CornerRadius="11" Background="#2A2B31"/>
+              <Border x:Name="track" CornerRadius="11" Background="#3B2237"/>
               <Border x:Name="on" CornerRadius="11" Background="{DynamicResource Accent}" Opacity="0"/>
               <Ellipse x:Name="knob" Width="16" Height="16" Fill="White" HorizontalAlignment="Left" Margin="3,0,0,0">
                 <Ellipse.RenderTransform><TranslateTransform x:Name="slide"/></Ellipse.RenderTransform>
@@ -360,7 +374,7 @@
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="ContextMenu">
-            <Border Background="#1D1E22" BorderBrush="#2E2F35" BorderThickness="1" CornerRadius="10" Padding="4">
+            <Border Background="#241323" BorderBrush="#46283F" BorderThickness="1" CornerRadius="10" Padding="4">
               <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle"/>
             </Border>
           </ControlTemplate>
@@ -368,7 +382,7 @@
       </Setter>
     </Style>
     <Style TargetType="MenuItem">
-      <Setter Property="Foreground" Value="#ECECEE"/>
+      <Setter Property="Foreground" Value="#F7ECF1"/>
       <Setter Property="FontFamily" Value="Segoe UI Variable Text, Segoe UI"/>
       <Setter Property="FontWeight" Value="Normal"/>
       <Setter Property="FontSize" Value="13"/>
@@ -384,9 +398,9 @@
               </Grid>
             </Border>
             <ControlTemplate.Triggers>
-              <Trigger Property="IsHighlighted" Value="True"><Setter TargetName="b" Property="Background" Value="#2A2B30"/></Trigger>
+              <Trigger Property="IsHighlighted" Value="True"><Setter TargetName="b" Property="Background" Value="#3B2237"/></Trigger>
               <Trigger Property="IsChecked" Value="True"><Setter TargetName="chk" Property="Visibility" Value="Visible"/></Trigger>
-              <Trigger Property="IsEnabled" Value="False"><Setter Property="Foreground" Value="#5C5D65"/></Trigger>
+              <Trigger Property="IsEnabled" Value="False"><Setter Property="Foreground" Value="#75596A"/></Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
@@ -395,7 +409,7 @@
     <Style TargetType="Separator">
       <Setter Property="Template">
         <Setter.Value>
-          <ControlTemplate TargetType="Separator"><Border Height="1" Background="#2A2B30" Margin="6,4"/></ControlTemplate>
+          <ControlTemplate TargetType="Separator"><Border Height="1" Background="#3B2237" Margin="6,4"/></ControlTemplate>
         </Setter.Value>
       </Setter>
     </Style>
@@ -420,7 +434,7 @@
       <Setter Property="CornerRadius" Value="8"/>
       <Style.Triggers>
         <Trigger Property="IsKeyboardFocusWithin" Value="True">
-          <Setter Property="BorderBrush" Value="#3A3B42"/>
+          <Setter Property="BorderBrush" Value="#5A3150"/>
         </Trigger>
       </Style.Triggers>
     </Style>
@@ -446,8 +460,8 @@
       <Setter Property="Foreground" Value="{StaticResource Muted}"/>
     </Style>
     <Style x:Key="Stat" TargetType="TextBlock">
-      <Setter Property="FontFamily" Value="{StaticResource Display}"/>
-      <Setter Property="FontSize" Value="26"/>
+      <Setter Property="FontFamily" Value="{StaticResource Serif}"/>
+      <Setter Property="FontSize" Value="28"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
       <Setter Property="Typography.NumeralAlignment" Value="Tabular"/>
       <Setter Property="Foreground" Value="{StaticResource Text}"/>
@@ -460,7 +474,8 @@
     </Style>
     <Style x:Key="Section" TargetType="TextBlock">
       <Setter Property="Foreground" Value="{StaticResource Text}"/>
-      <Setter Property="FontSize" Value="14"/>
+      <Setter Property="FontFamily" Value="{StaticResource Serif}"/>
+      <Setter Property="FontSize" Value="17"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
     </Style>
 
@@ -477,12 +492,13 @@
     </Style>
     <Style x:Key="SetRow" TargetType="Border">
       <Setter Property="Padding" Value="0,12"/>
-      <Setter Property="BorderBrush" Value="#222328"/>
+      <Setter Property="BorderBrush" Value="#2E1729"/>
       <Setter Property="BorderThickness" Value="0,0,0,1"/>
     </Style>
     <Style x:Key="SetHead" TargetType="TextBlock">
       <Setter Property="Foreground" Value="{DynamicResource Accent}"/>
-      <Setter Property="FontSize" Value="12"/>
+      <Setter Property="FontFamily" Value="{StaticResource Mono}"/>
+      <Setter Property="FontSize" Value="11.5"/>
       <Setter Property="FontWeight" Value="SemiBold"/>
       <Setter Property="Margin" Value="0,20,0,2"/>
     </Style>
@@ -497,7 +513,7 @@
           <ControlTemplate TargetType="ListBoxItem">
             <Grid>
               <Border x:Name="b" CornerRadius="8" Padding="10,7,6,7">
-                <Border.Background><SolidColorBrush Color="#0026272C"/></Border.Background>
+                <Border.Background><SolidColorBrush Color="#00331D30"/></Border.Background>
                 <ContentPresenter/>
               </Border>
               <!-- Teinte d'accent de la ligne selectionnee (calque separe pour ne pas gener l'animation de survol) -->
@@ -507,8 +523,8 @@
             </Grid>
             <ControlTemplate.Triggers>
               <Trigger Property="IsMouseOver" Value="True">
-                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF1F2024" Duration="0:0:0.12"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
-                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#0026272C" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
+                <Trigger.EnterActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#FF2B1628" Duration="0:0:0.12"/></Storyboard></BeginStoryboard></Trigger.EnterActions>
+                <Trigger.ExitActions><BeginStoryboard><Storyboard><ColorAnimation Storyboard.TargetName="b" Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)" To="#00331D30" Duration="0:0:0.2"/></Storyboard></BeginStoryboard></Trigger.ExitActions>
               </Trigger>
               <Trigger Property="IsSelected" Value="True">
                 <Trigger.EnterActions><BeginStoryboard><Storyboard>
@@ -530,7 +546,7 @@
       <Grid>
         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <Grid Width="34" Height="34">
-          <Border CornerRadius="8" Background="#24252A">
+          <Border CornerRadius="8" Background="#2E1A2B">
             <TextBlock Text="{Binding Initial}" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource Muted}"
                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
           </Border>
@@ -546,19 +562,19 @@
         <Border Grid.Column="2" CornerRadius="6" Padding="7,2" Margin="0,0,4,0" VerticalAlignment="Center">
           <Border.Style>
             <Style TargetType="Border">
-              <Setter Property="Background" Value="#24252A"/>
+              <Setter Property="Background" Value="#2E1A2B"/>
               <Style.Triggers>
                 <DataTrigger Binding="{Binding Played}" Value="{x:Null}"><Setter Property="Visibility" Value="Collapsed"/></DataTrigger>
-                <DataTrigger Binding="{Binding IsPlayed}" Value="True"><Setter Property="Background" Value="#1A3FB37F"/></DataTrigger>
+                <DataTrigger Binding="{Binding IsPlayed}" Value="True"><Setter Property="Background" Value="#1A7FD8C9"/></DataTrigger>
               </Style.Triggers>
             </Style>
           </Border.Style>
           <TextBlock Text="{Binding Played}" FontSize="11" Typography.NumeralAlignment="Tabular">
             <TextBlock.Style>
               <Style TargetType="TextBlock">
-                <Setter Property="Foreground" Value="#9FA0A8"/>
+                <Setter Property="Foreground" Value="#C7A9B6"/>
                 <Style.Triggers>
-                  <DataTrigger Binding="{Binding IsPlayed}" Value="True"><Setter Property="Foreground" Value="#3FB37F"/></DataTrigger>
+                  <DataTrigger Binding="{Binding IsPlayed}" Value="True"><Setter Property="Foreground" Value="#7FD8C9"/></DataTrigger>
                 </Style.Triggers>
               </Style>
             </TextBlock.Style>
@@ -569,10 +585,10 @@
     </DataTemplate>
 
     <DataTemplate x:Key="QueueTpl">
-      <Border CornerRadius="8" Background="#24252A" Padding="4,3,3,3" Margin="0,0,6,6">
+      <Border CornerRadius="8" Background="#2E1A2B" Padding="4,3,3,3" Margin="0,0,6,6">
         <StackPanel Orientation="Horizontal">
           <Grid Width="18" Height="18" Margin="0,0,7,0">
-            <Border CornerRadius="5" Background="#2E2F35">
+            <Border CornerRadius="5" Background="#46283F">
               <TextBlock Text="{Binding Initial}" FontSize="9" FontWeight="SemiBold" Foreground="{StaticResource Muted}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <Image Source="{Binding IconUrl}" Width="18" Height="18" RenderOptions.BitmapScalingMode="HighQuality">
@@ -600,20 +616,20 @@
                 <Setter Property="Background" Value="{StaticResource Green}"/>
                 <Style.Triggers>
                   <DataTrigger Binding="{Binding Kind}" Value="Rotation"><Setter Property="Background" Value="{DynamicResource Accent}"/></DataTrigger>
-                  <DataTrigger Binding="{Binding Kind}" Value="Quête"><Setter Property="Background" Value="#F2A93B"/></DataTrigger>
+                  <DataTrigger Binding="{Binding Kind}" Value="Quête"><Setter Property="Background" Value="#FF9DC6"/></DataTrigger>
                 </Style.Triggers>
               </Style>
             </Border.Style>
           </Border>
           <Grid Grid.Column="1" Width="38" Height="38" VerticalAlignment="Center">
-            <Border CornerRadius="9" Background="#2A2B30">
+            <Border CornerRadius="9" Background="#3B2237">
               <TextBlock Text="{Binding Initial}" FontWeight="SemiBold" FontSize="14" Foreground="{StaticResource Muted}"
                          HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
             <Image Source="{Binding IconUrl}" Width="38" Height="38" RenderOptions.BitmapScalingMode="HighQuality">
               <Image.Clip><RectangleGeometry Rect="0,0,38,38" RadiusX="9" RadiusY="9"/></Image.Clip>
             </Image>
-            <Ellipse Width="11" Height="11" Fill="{StaticResource Green}" Stroke="#1D1E22" StrokeThickness="2"
+            <Ellipse Width="11" Height="11" Fill="{StaticResource Green}" Stroke="#241323" StrokeThickness="2"
                      HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-3,-3"/>
           </Grid>
           <StackPanel Grid.Column="2" Margin="12,0,12,0" VerticalAlignment="Center">
@@ -632,6 +648,31 @@
   </Window.Resources>
 
   <Grid>
+    <!-- Halos en fond : sang en haut a gauche, menthe a droite -->
+    <Rectangle IsHitTestVisible="False">
+      <Rectangle.Fill>
+        <RadialGradientBrush Center="0.12,-0.08" GradientOrigin="0.12,-0.08" RadiusX="0.7" RadiusY="0.6">
+          <GradientStop Color="#2ED21E42" Offset="0"/>
+          <GradientStop Color="#00D21E42" Offset="1"/>
+        </RadialGradientBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+    <Rectangle IsHitTestVisible="False">
+      <Rectangle.Fill>
+        <RadialGradientBrush Center="1.08,0.25" GradientOrigin="1.08,0.25" RadiusX="0.5" RadiusY="0.5">
+          <GradientStop Color="#127FD8C9" Offset="0"/>
+          <GradientStop Color="#007FD8C9" Offset="1"/>
+        </RadialGradientBrush>
+      </Rectangle.Fill>
+    </Rectangle>
+    <Rectangle IsHitTestVisible="False">
+      <Rectangle.Fill>
+        <RadialGradientBrush Center="0.85,1.1" GradientOrigin="0.85,1.1" RadiusX="0.55" RadiusY="0.45">
+          <GradientStop Color="#1AFF9DC6" Offset="0"/>
+          <GradientStop Color="#00FF9DC6" Offset="1"/>
+        </RadialGradientBrush>
+      </Rectangle.Fill>
+    </Rectangle>
     <Grid Margin="22,0,22,16">
       <Grid.RowDefinitions>
         <RowDefinition Height="60"/>
@@ -643,23 +684,38 @@
       <!-- En-tete -->
       <Grid Grid.Row="0">
         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <!-- Fil rouge du destin sous l'en-tete, qui s'efface vers la droite -->
+        <Border Grid.ColumnSpan="2" Height="1" VerticalAlignment="Bottom" Margin="0,0,0,2" Background="{DynamicResource Accent}" IsHitTestVisible="False">
+          <Border.OpacityMask>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+              <GradientStop Color="#00000000" Offset="0"/>
+              <GradientStop Color="#CC000000" Offset="0.08"/>
+              <GradientStop Color="#55000000" Offset="0.45"/>
+              <GradientStop Color="#00000000" Offset="1"/>
+            </LinearGradientBrush>
+          </Border.OpacityMask>
+        </Border>
         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
           <!-- Logo : meme dessin que l'icone (QsIcon) -->
           <Grid Width="32" Height="32">
             <Border CornerRadius="8">
               <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                  <GradientStop Color="#8B93FF" Offset="0"/>
-                  <GradientStop Color="#6C4CF5" Offset="1"/>
+                  <GradientStop Color="#F0476B" Offset="0"/>
+                  <GradientStop Color="#7C1029" Offset="1"/>
                 </LinearGradientBrush>
               </Border.Background>
             </Border>
             <TextBlock Text="&#xE7FC;" FontFamily="{StaticResource Icons}" FontSize="16" Foreground="White"
                        HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,1,0,0"/>
-            <Path Fill="#FFCD56" Data="M24.8,3 L26.1,5.9 L29,7.2 L26.1,8.5 L24.8,11.4 L23.5,8.5 L20.6,7.2 L23.5,5.9 Z"/>
+            <!-- Petit coeur sakura (meme dessin que l'icone) -->
+            <Path Fill="#FF9DC6" Stroke="#14080F" StrokeThickness="1.2"
+                  Data="M25.2,12.4 C25.2,12.4 20,9.3 20,6.2 C20,4.6 21.2,3.4 22.6,3.4 C23.8,3.4 24.7,4.1 25.2,5.1 C25.7,4.1 26.6,3.4 27.8,3.4 C29.2,3.4 30.4,4.6 30.4,6.2 C30.4,9.3 25.2,12.4 25.2,12.4 Z"/>
           </Grid>
-          <TextBlock Text="Quest Spoofer" Foreground="{StaticResource Text}" FontSize="15" FontWeight="SemiBold" Margin="12,0,0,0" VerticalAlignment="Center"/>
-          <TextBlock Text="Simulateur de présence Discord" Foreground="{StaticResource Dim}" FontSize="12.5" Margin="10,1,0,0" VerticalAlignment="Center"/>
+          <TextBlock FontFamily="{StaticResource Serif}" FontSize="21" FontWeight="SemiBold" Margin="12,0,0,0" VerticalAlignment="Center">
+            <Run Text="Quest" Foreground="{StaticResource Text}"/><Run Text=" Farm" FontStyle="Italic" Foreground="{DynamicResource Accent}"/>
+          </TextBlock>
+          <TextBlock Text="// tu ne joues qu'avec moi ♡" Foreground="{StaticResource Dim}" FontFamily="{StaticResource Mono}" FontSize="11.5" Margin="14,3,0,0" VerticalAlignment="Center"/>
         </StackPanel>
         <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
           <Border x:Name="Pill" CornerRadius="8" Padding="11,6" Margin="0,0,8,0" Background="{StaticResource Surface2}"
@@ -696,8 +752,8 @@
           <StackPanel>
             <Grid>
               <TextBlock Text="Catalogue" Style="{StaticResource Label}" VerticalAlignment="Center"/>
-              <Border Width="28" Height="28" CornerRadius="8" Background="#224EA8F7" HorizontalAlignment="Right" Margin="0,-4,-4,-6">
-                <TextBlock Text="&#xE8F1;" FontFamily="{StaticResource Icons}" FontSize="13" Foreground="#4EA8F7" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              <Border Width="28" Height="28" CornerRadius="8" Background="#22B98CFF" HorizontalAlignment="Right" Margin="0,-4,-4,-6">
+                <TextBlock Text="&#xE8F1;" FontFamily="{StaticResource Icons}" FontSize="13" Foreground="#B98CFF" HorizontalAlignment="Center" VerticalAlignment="Center"/>
               </Border>
             </Grid>
             <TextBlock x:Name="StatGames" Text="—" Style="{StaticResource Stat}"/>
@@ -708,8 +764,8 @@
           <StackPanel>
             <Grid>
               <TextBlock Text="Sessions" Style="{StaticResource Label}" VerticalAlignment="Center"/>
-              <Border Width="28" Height="28" CornerRadius="8" Background="#223FB37F" HorizontalAlignment="Right" Margin="0,-4,-4,-6">
-                <TextBlock Text="&#xE768;" FontFamily="{StaticResource Icons}" FontSize="12" Foreground="#3FB37F" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              <Border Width="28" Height="28" CornerRadius="8" Background="#227FD8C9" HorizontalAlignment="Right" Margin="0,-4,-4,-6">
+                <TextBlock Text="&#xE768;" FontFamily="{StaticResource Icons}" FontSize="12" Foreground="#7FD8C9" HorizontalAlignment="Center" VerticalAlignment="Center"/>
               </Border>
             </Grid>
             <TextBlock x:Name="StatActive" Text="0" Style="{StaticResource Stat}" Foreground="{DynamicResource Accent}"/>
@@ -720,8 +776,8 @@
           <StackPanel>
             <Grid>
               <TextBlock Text="Temps en cours" Style="{StaticResource Label}" VerticalAlignment="Center"/>
-              <Border Width="28" Height="28" CornerRadius="8" Background="#22F2A93B" HorizontalAlignment="Right" Margin="0,-4,-4,-6">
-                <TextBlock Text="&#xE916;" FontFamily="{StaticResource Icons}" FontSize="13" Foreground="#F2A93B" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+              <Border Width="28" Height="28" CornerRadius="8" Background="#22FF9DC6" HorizontalAlignment="Right" Margin="0,-4,-4,-6">
+                <TextBlock Text="&#xE916;" FontFamily="{StaticResource Icons}" FontSize="13" Foreground="#FF9DC6" HorizontalAlignment="Center" VerticalAlignment="Center"/>
               </Border>
             </Grid>
             <TextBlock x:Name="StatTime" Text="00:00:00" Style="{StaticResource Stat}"/>
@@ -734,11 +790,11 @@
             <Grid>
               <TextBlock Text="Game Variety · jeux uniques" Style="{StaticResource Label}" VerticalAlignment="Center"/>
               <Border Width="28" Height="28" CornerRadius="8" Background="{DynamicResource AccentSoft}" HorizontalAlignment="Right" Margin="0,-4,-4,-6">
-                <TextBlock Text="&#xE7FC;" FontFamily="{StaticResource Icons}" FontSize="14" Foreground="{DynamicResource Accent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Text="&#xEB52;" FontFamily="{StaticResource Icons}" FontSize="13" Foreground="{DynamicResource Accent}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
               </Border>
             </Grid>
             <TextBlock Style="{StaticResource Stat}">
-              <Run x:Name="StatUnique" Text="0" Foreground="{DynamicResource Accent}"/><Run x:Name="StatUniqueGoal" Text=" / 2" Foreground="#6B6C74" FontSize="18"/>
+              <Run x:Name="StatUnique" Text="0" Foreground="{DynamicResource Accent}"/><Run x:Name="StatUniqueGoal" Text=" / 2" Foreground="#8A6B76" FontSize="18"/>
             </TextBlock>
             <TextBlock x:Name="StatUniqueSub" Text="prochain palier : Sampler" Style="{StaticResource StatSub}"/>
           </StackPanel>
@@ -796,7 +852,7 @@
                          TextAlignment="Center" LineHeight="20" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" Margin="24,0"/>
               <StackPanel x:Name="Loader" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid Width="28" Height="28" HorizontalAlignment="Center">
-                  <Ellipse Stroke="#2A2B30" StrokeThickness="2.5"/>
+                  <Ellipse Stroke="#3B2237" StrokeThickness="2.5"/>
                   <Path Data="M14,1.25 A12.75,12.75 0 0 1 26.75,14" Stroke="{DynamicResource Accent}" StrokeThickness="2.5"
                         StrokeStartLineCap="Round" StrokeEndLineCap="Round" RenderTransformOrigin="0.5,0.5">
                     <!-- Anime depuis le code, et arrete une fois le catalogue charge -->
@@ -839,11 +895,11 @@
                       <TextBlock x:Name="RotInfo" Foreground="{StaticResource Muted}" FontSize="12.5" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
                     </StackPanel>
                   </DockPanel>
-                  <TextBlock x:Name="RotCountdown" Grid.Column="1" Text="--:--" FontFamily="{StaticResource Display}" FontSize="24" FontWeight="SemiBold"
+                  <TextBlock x:Name="RotCountdown" Grid.Column="1" Text="--:--" FontFamily="{StaticResource Serif}" FontSize="27" FontWeight="SemiBold"
                              Typography.NumeralAlignment="Tabular" Foreground="{StaticResource Text}" VerticalAlignment="Center" Margin="12,0,0,0"/>
                 </Grid>
                 <Grid Height="4" Margin="0,12,0,12">
-                  <Border Background="#2A2B30" CornerRadius="2"/>
+                  <Border Background="#3B2237" CornerRadius="2"/>
                   <Border x:Name="RotBar" Background="{DynamicResource Accent}" CornerRadius="2"/>
                 </Grid>
                 <ScrollViewer MaxHeight="68" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -888,9 +944,9 @@
                 <ItemsControl x:Name="Active" ItemTemplate="{StaticResource ActiveTpl}"/>
               </ScrollViewer>
               <StackPanel x:Name="Empty" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="&#xE7FC;" FontFamily="{StaticResource Icons}" FontSize="26" Foreground="#3A3B42" HorizontalAlignment="Center"/>
+                <TextBlock Text="&#xEB51;" FontFamily="{StaticResource Icons}" FontSize="28" Foreground="{DynamicResource Accent}" Opacity="0.55" HorizontalAlignment="Center"/>
                 <TextBlock Text="Aucune session" Foreground="{StaticResource Muted}" FontSize="14" Margin="0,12,0,0" HorizontalAlignment="Center"/>
-                <TextBlock Text="Choisis un jeu à gauche puis lance le spoof." Foreground="{StaticResource Dim}" FontSize="12.5"
+                <TextBlock Text="Choisis un jeu à gauche… je t'attends ♡" Foreground="{StaticResource Dim}" FontSize="12.5"
                            TextAlignment="Center" Margin="0,4,0,0"/>
               </StackPanel>
             </Grid>
@@ -902,19 +958,19 @@
               <Border Padding="18,16" Style="{StaticResource Card}">
                 <StackPanel>
                   <StackPanel Orientation="Horizontal">
-                    <Border Width="30" Height="30" CornerRadius="8" Background="#26F2A93B" Margin="0,0,10,0">
-                      <TextBlock Text="&#xE7C1;" FontFamily="{StaticResource Icons}" FontSize="13" Foreground="#F2A93B"
+                    <Border Width="30" Height="30" CornerRadius="8" Background="#26FF9DC6" Margin="0,0,10,0">
+                      <TextBlock Text="&#xE7C1;" FontFamily="{StaticResource Icons}" FontSize="13" Foreground="#FF9DC6"
                                  HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <TextBlock Text="Mode quête" Foreground="{StaticResource Text}" FontSize="13.5" FontWeight="SemiBold" VerticalAlignment="Center"/>
                   </StackPanel>
                   <TextBlock Foreground="{StaticResource Muted}" FontSize="12.5" TextWrapping="Wrap" Margin="0,4,0,14" LineHeight="19"
                              Text="Choisis le jeu de la quête dans le catalogue et indique la durée demandée. L'outil le lance, compte, te prévient et s'arrête tout seul."/>
-                  <Border Padding="12" CornerRadius="10" Background="#24252A">
+                  <Border Padding="12" CornerRadius="10" Background="#2E1A2B">
                     <Grid>
                       <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                       <Grid Width="42" Height="42">
-                        <Border CornerRadius="10" Background="#2E2F35">
+                        <Border CornerRadius="10" Background="#46283F">
                           <TextBlock x:Name="QuestInitial" Text="?" FontWeight="SemiBold" FontSize="16" Foreground="{StaticResource Muted}"
                                      HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -958,10 +1014,10 @@
                     <TextBlock x:Name="QuestInfo" Foreground="{StaticResource Muted}" FontSize="12.5" TextTrimming="CharacterEllipsis" Margin="0,0,60,0"/>
                     <TextBlock x:Name="QuestPct" Foreground="{StaticResource Dim}" FontSize="12" HorizontalAlignment="Right" Typography.NumeralAlignment="Tabular"/>
                   </Grid>
-                  <TextBlock x:Name="QuestCountdown" Text="15:00" FontFamily="{StaticResource Display}" FontSize="52" FontWeight="SemiBold"
+                  <TextBlock x:Name="QuestCountdown" Text="15:00" FontFamily="{StaticResource Serif}" FontSize="56" FontWeight="SemiBold"
                              Typography.NumeralAlignment="Tabular" Foreground="{StaticResource Text}" HorizontalAlignment="Center" Margin="0,4,0,10"/>
                   <Grid Height="4">
-                    <Border Background="#2A2B30" CornerRadius="2"/>
+                    <Border Background="#3B2237" CornerRadius="2"/>
                     <Border x:Name="QuestBar" Background="{DynamicResource Accent}" CornerRadius="2"/>
                   </Grid>
                   <Button x:Name="BtnQuestStop" Style="{StaticResource Danger}" Height="36" Margin="0,16,0,0">
@@ -1030,7 +1086,7 @@
         <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
         <TextBlock x:Name="Status" Text="Initialisation" FontSize="12" Foreground="{StaticResource Muted}"
                    TextTrimming="CharacterEllipsis" Margin="0,0,24,0"/>
-        <TextBlock Grid.Column="1" Foreground="#55565E" FontSize="11.5"
+        <TextBlock Grid.Column="1" Foreground="#6E5262" FontSize="11.5"
                    Text="Ctrl+F chercher · Entrée lancer · Ctrl+Entrée rotation · Ctrl+D favori · Suppr arrêter · Ctrl+Alt+S pause"/>
       </Grid>
     </Grid>
@@ -1039,10 +1095,10 @@
     <Grid x:Name="SettingsOverlay" Visibility="Collapsed">
       <Border x:Name="SettingsBackdrop" Background="#B3000000"/>
       <Border x:Name="SettingsCard" Width="620" Margin="0,40" VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="14"
-              Background="#18191C" BorderBrush="#2A2B30" BorderThickness="1" Padding="26,20" WindowChrome.IsHitTestVisibleInChrome="True">
+              Background="#1C0D18" BorderBrush="#3B2237" BorderThickness="1" Padding="26,20" WindowChrome.IsHitTestVisibleInChrome="True">
         <DockPanel>
           <Grid DockPanel.Dock="Top" Margin="0,0,0,4">
-            <TextBlock Text="Réglages" Foreground="{StaticResource Text}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            <TextBlock Text="Réglages" Foreground="{StaticResource Text}" FontFamily="{StaticResource Serif}" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center"/>
             <Button x:Name="BtnSettingsClose" Style="{StaticResource TitleBtn}" Content="&#xE8BB;" HorizontalAlignment="Right" Margin="0" ToolTip="Fermer (Échap)"/>
           </Grid>
           <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" MaxHeight="560">
