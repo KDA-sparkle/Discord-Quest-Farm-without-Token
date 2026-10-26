@@ -44,7 +44,7 @@ $Tiers = @( @(2, 'Sampler'), @(5, 'Dabbler'), @(10, 'Enthusiast'), @(100, 'Unive
 
 # Couleurs d'accent : couleur unie, nom affiche
 $Accents = [ordered]@{
-    blood   = @('#E8335A', 'Sang')
+    blood   = @('#D61F45', 'Sang')
     sakura  = @('#FF7EB6', 'Sakura')
     cherry  = @('#FF4D8D', 'Cerise')
     lilac   = @('#B98CFF', 'Lilas')
@@ -79,7 +79,7 @@ if (-not ('QsSession' -as [type])) {
 [void][QsWin]::SetAppId('KDA-sparkle.QuestSpoofer')
 
 # --- Compiler une fois le faux exe ---
-$blank = Join-Path $gamesDir '_stub_v6.exe'
+$blank = Join-Path $gamesDir '_stub_v7.exe'
 if (-not (Test-Path -LiteralPath $blank)) {
     $csc = Join-Path ([Runtime.InteropServices.RuntimeEnvironment]::GetRuntimeDirectory()) 'csc.exe'
     if (-not (Test-Path $csc)) { [void][Windows.MessageBox]::Show("csc.exe introuvable (.NET Framework requis)."); return }
@@ -198,7 +198,7 @@ function Hide-ToTray {
     [QsMem]::Trim()
     if (-not $script:trayHintShown) {
         $script:trayHintShown = $true
-        $script:tray.ShowBalloonTip(4000, 'Quest Farm', (L 'Toujours actif ici. Double-clic pour rouvrir.'), [Windows.Forms.ToolTipIcon]::Info)
+        $script:tray.ShowBalloonTip(4000, 'Quest Farm', (L 'Toujours là… double-clic pour me retrouver ♡'), [Windows.Forms.ToolTipIcon]::Info)
     }
 }
 
@@ -238,7 +238,7 @@ $script:stubCorner = 'br'       # br, bl, tr, tl
 $script:tab = 'all'
 $script:page = 'sessions'
 $script:accent = 'blood'
-$script:accentHex = '#E8335A'
+$script:accentHex = '#D61F45'
 $script:widgetWanted = $false
 $script:widgetPos = $null
 $script:endT = @{ At = $null; OnRotationEnd = $false; Action = 'none' }
@@ -1952,6 +1952,7 @@ function Set-Lang([string]$l) {
 # Reaffiche tous les textes calcules par le code dans la langue courante
 function Update-AllTexts {
     Update-Ui
+    $LogLine.Text = L $LogLines[$script:logIdx]
     Update-Rot
     Update-RotClock
     Update-Stats
@@ -2015,6 +2016,31 @@ $win.Add_PreviewKeyDown({
         }
     }
 })
+
+# ============================================================
+#  Faux terminal de la barre d'etat (ambiance yandere, comme yandere.eu)
+# ============================================================
+$LogLines = @(
+    'surveillance de Discord : active ♡'
+    'ping Discord… latence : ∞'
+    'localisation de tes jeux : trouvés (comme toujours)'
+    'tentative de fuite détectée… verrouillage du cœur'
+    'rival.exe a cessé de fonctionner'
+    'oubli_de_toi.exe : introuvable'
+    'sauvegarde de tes quêtes… (x47)'
+    'compte à rebours : chaque seconde t''appartient'
+    'firewall : quiconque s''approche est bloqué 🔪'
+    'badge Game Variety : je le veux pour toi'
+    'batterie de patience : 0 % (comme d''habitude)'
+)
+$script:logIdx = Get-Random -Maximum $LogLines.Count
+function Step-LogLine {
+    $script:logIdx = ($script:logIdx + 1) % $LogLines.Count
+    $LogLine.Text = L $LogLines[$script:logIdx]
+}
+$logTimer = New-Object Windows.Threading.DispatcherTimer
+$logTimer.Interval = [TimeSpan]::FromSeconds(4.5)
+$logTimer.Add_Tick({ Step-LogLine })
 
 # ============================================================
 #  Minuteur principal (1 fois par seconde)
@@ -2133,7 +2159,7 @@ $timer.Add_Tick({
 
 # A la fermeture : sauvegarder puis tout arreter, widget et icone compris
 $win.Add_Closing({
-    $timer.Stop()
+    $timer.Stop(); $logTimer.Stop()
     Save-State
     Save-History
     foreach ($s in @($script:sessions)) { Stop-Session $s }
@@ -2179,6 +2205,7 @@ if (Test-Path -LiteralPath $paths.Catalog) {
 Start-CatalogFetch
 
 $timer.Start()
+Step-LogLine; $logTimer.Start()
 [void](New-Object Windows.Interop.WindowInteropHelper $win).EnsureHandle()
 if (-not $StartHidden) { $win.Show(); [void]$win.Activate() }
 if ($script:widgetWanted) { Show-Widget }

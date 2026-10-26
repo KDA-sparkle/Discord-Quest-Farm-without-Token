@@ -275,49 +275,49 @@ public static class QsIcon {
         return p;
     }
 
-    // Coeur dans un carre (x, y, cote)
-    static GraphicsPath Heart(float x, float y, float s) {
-        var p = new GraphicsPath();
-        p.AddBezier(x + s / 2, y + s, x - s * 0.1f, y + s * 0.55f, x, y - s * 0.05f, x + s / 2, y + s * 0.28f);
-        p.AddBezier(x + s / 2, y + s * 0.28f, x + s, y - s * 0.05f, x + s * 1.1f, y + s * 0.55f, x + s / 2, y + s);
-        p.CloseFigure();
-        return p;
-    }
-
-    // Logo : carre arrondi rouge sang -> bordeaux, manette blanche, petit coeur sakura
+    // Logo : tuile sombre cerclee de sang, coeur rouge fendu et recousu au fil menthe, une goutte
     static Bitmap Draw(int size) {
         var bmp = new Bitmap(size, size, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         float s = size;
+        float u = s * 0.035f, ox = s * 0.08f, oy = s * 0.045f;   // repere 24 x 24 du coeur
+        Func<float, float, PointF> P = (x, y) => new PointF(ox + x * u, oy + y * u);
         using (var g = Graphics.FromImage(bmp)) {
             g.SmoothingMode = SmoothingMode.AntiAlias;
-            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-            var box = new RectangleF(0, 0, s - 1, s - 1);
-            using (var path = RoundRect(box, s * 0.23f)) {
-                using (var br = new LinearGradientBrush(box, Color.FromArgb(240, 71, 107), Color.FromArgb(124, 16, 41), 50f))
+            var box = new RectangleF(s * 0.02f, s * 0.02f, s * 0.96f - 1, s * 0.96f - 1);
+            using (var path = RoundRect(box, s * 0.22f)) {
+                using (var br = new LinearGradientBrush(box, Color.FromArgb(46, 18, 38), Color.FromArgb(16, 6, 12), 90f))
                     g.FillPath(br, path);
-                // Reflet doux sur la moitie haute
-                g.SetClip(path);
-                using (var hl = new LinearGradientBrush(new RectangleF(0, 0, s, s * 0.55f), Color.FromArgb(46, 255, 255, 255), Color.FromArgb(0, 255, 255, 255), 90f))
-                    g.FillRectangle(hl, 0, 0, s, s * 0.55f);
-                g.ResetClip();
+                using (var pen = new Pen(Color.FromArgb(150, 210, 30, 66), Math.Max(1f, s * 0.016f))) g.DrawPath(pen, path);
             }
-            // Manette (glyphe Segoe Fluent Icons / MDL2), legerement ombree
-            string glyph = "";
-            string fam = "Segoe Fluent Icons";
-            using (var test = new Font(fam, 10)) if (test.Name != fam) fam = "Segoe MDL2 Assets";
-            using (var f = new Font(fam, s * 0.50f, GraphicsUnit.Pixel))
-            using (var sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center }) {
-                var r = new RectangleF(0, s * 0.04f, s, s);
-                using (var sh = new SolidBrush(Color.FromArgb(70, 60, 0, 20)))
-                    g.DrawString(glyph, f, sh, new RectangleF(r.X, r.Y + s * 0.025f, r.Width, r.Height), sf);
-                g.DrawString(glyph, f, Brushes.White, r, sf);
+            using (var heart = new GraphicsPath()) {
+                heart.AddBezier(P(12, 21), P(5, 16), P(2, 12), P(2, 8.5f));
+                heart.AddBezier(P(2, 8.5f), P(2, 5.4f), P(4.4f, 3), P(7.3f, 3));
+                heart.AddBezier(P(7.3f, 3), P(9.2f, 3), P(10.9f, 4), P(12, 5.6f));
+                heart.AddBezier(P(12, 5.6f), P(13.1f, 4), P(14.8f, 3), P(16.7f, 3));
+                heart.AddBezier(P(16.7f, 3), P(19.6f, 3), P(22, 5.4f), P(22, 8.5f));
+                heart.AddBezier(P(22, 8.5f), P(22, 12), P(19, 16), P(12, 21));
+                heart.CloseFigure();
+                using (var br = new LinearGradientBrush(new RectangleF(0, oy + 3 * u, s, 18 * u), Color.FromArgb(236, 44, 84), Color.FromArgb(118, 14, 38), 90f))
+                    g.FillPath(br, heart);
             }
-            // Coeur sakura en haut a droite, cerne de la couleur du fond
-            if (size >= 24)
-                using (var heart = Heart(s * 0.635f, s * 0.085f, s * 0.29f))
-                using (var ring = new Pen(Color.FromArgb(124, 16, 41), s * 0.035f))
-                using (var pink = new SolidBrush(Color.FromArgb(255, 157, 198))) { g.DrawPath(ring, heart); g.FillPath(pink, heart); }
+            if (size >= 24) {
+                // Fissure (couleur du fond) puis points de couture menthe en travers
+                var crack = new[] { P(12, 5.6f), P(10.4f, 9.2f), P(13.4f, 12), P(10.9f, 15.2f), P(12.4f, 18.6f) };
+                using (var pen = new Pen(Color.FromArgb(20, 8, 15), s * 0.045f) { LineJoin = LineJoin.Round }) g.DrawLines(pen, crack);
+                using (var mint = new Pen(Color.FromArgb(127, 216, 201), s * 0.03f) { StartCap = LineCap.Round, EndCap = LineCap.Round }) {
+                    g.DrawLine(mint, P(9.6f, 6.6f), P(12.6f, 8.4f));
+                    g.DrawLine(mint, P(10.6f, 10.9f), P(13.6f, 9.9f));
+                    g.DrawLine(mint, P(10.6f, 12.4f), P(13.4f, 14.4f));
+                    g.DrawLine(mint, P(10.2f, 17.2f), P(13.2f, 16.2f));
+                }
+                // Goutte de sang sous la pointe
+                using (var drop = new GraphicsPath()) {
+                    drop.AddBezier(P(12, 21.6f), P(11.2f, 22.8f), P(10.9f, 23.4f), P(12, 23.8f));
+                    drop.AddBezier(P(12, 23.8f), P(13.1f, 23.4f), P(12.8f, 22.8f), P(12, 21.6f));
+                    using (var b = new SolidBrush(Color.FromArgb(210, 30, 66))) g.FillPath(b, drop);
+                }
+            }
         }
         return bmp;
     }

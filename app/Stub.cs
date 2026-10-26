@@ -37,11 +37,10 @@ class StubForm : Form {
     bool hoverClose;
     Rectangle closeRect;
 
-    static readonly Color Bg = Color.FromArgb(28, 13, 24);
+    static readonly Color Bg = Color.FromArgb(20, 8, 15);
     static readonly Color TextC = Color.FromArgb(247, 236, 241);
     static readonly Color MutedC = Color.FromArgb(199, 169, 182);
     static readonly Color DimC = Color.FromArgb(138, 107, 118);
-    static readonly Color SakuraC = Color.FromArgb(255, 157, 198);
 
     public StubForm(string title, Color accent, string size, float dpi, string iconUrl, string lang,
                     string corner, int slot, string mode, string cfgPath) {
@@ -228,7 +227,7 @@ class StubForm : Form {
         // Etat + chrono
         float y = pad + 25 * k;
         float dot = 7 * k;
-        using (var b = new SolidBrush(SakuraC)) using (var hp = Heart(x - 0.5f * k, y + 4 * k, dot + 1 * k)) g.FillPath(b, hp);
+        using (var b = new SolidBrush(accent)) using (var hp = Heart(x - 0.5f * k, y + 4 * k, dot + 1 * k)) g.FillPath(b, hp);
         TimeSpan t = DateTime.Now - start;
         string s = string.Format("{0}  ·  {1:00}:{2:00}:{3:00}", running, (int)t.TotalHours, t.Minutes, t.Seconds);
         using (var f = new Font("Segoe UI", 12.5f * k, GraphicsUnit.Pixel))
@@ -236,8 +235,10 @@ class StubForm : Form {
             g.DrawString(s, f, b, x + dot + 7 * k, y);
 
         // Ligne de couleur en bas
-        using (var b = new LinearGradientBrush(new RectangleF(0, 0, w, 3 * k), accent, Color.FromArgb(40, accent), 0f))
-            g.FillRectangle(b, 0, h - 3 * k, w, 3 * k);
+        // Couture en pointilles en bas, qui s'efface vers la droite
+        using (var b = new LinearGradientBrush(new RectangleF(0, 0, w, 3 * k), accent, Color.FromArgb(30, accent), 0f))
+        using (var pen = new Pen(b, 2 * k) { DashPattern = new float[] { 2.2f, 1.6f } })
+            g.DrawLine(pen, 0, h - 2 * k, w, h - 2 * k);
 
         // Petite croix (fermer = arreter ce spoof)
         closeRect = new Rectangle((int)(w - 30 * k), (int)(9 * k), (int)(21 * k), (int)(21 * k));
@@ -277,7 +278,7 @@ static class P {
     static void Main(string[] a) {
         string title = "Game", mode = "show", size = "m", corner = "br", icon = null, lang = "fr", cfg = null;
         int slot = 0;
-        Color color = Color.FromArgb(232, 51, 90);
+        Color color = Color.FromArgb(214, 31, 69);
 
         if (a.Length > 0 && !a[0].StartsWith("--")) {
             title = a[0];
