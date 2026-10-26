@@ -6,14 +6,15 @@
 
 <p align="center">
   Simulateur de présence Discord pour Windows<br>
+  <sub><code>// tu ne joues qu'avec moi ♡</code></sub><br>
   <a href="README.md">English</a> · <b>Français</b>
 </p>
 
 <p align="center">
-  <img src="assets/screenshot-fr.png" width="820" alt="Quest Spoofer">
+  <img src="assets/screenshot-fr.png" width="820" alt="Quest Farm">
 </p>
 
-Quest Spoofer lance de **faux processus** qui portent le nom d'exécutables de jeux reconnus par Discord.
+Quest Farm lance de **faux processus** qui portent le nom d'exécutables de jeux reconnus par Discord.
 Discord croit alors que tu joues : pratique pour les quêtes « joue à X pendant N minutes ».
 
 - **Aucun token, aucun mot de passe** : l'outil ne lit ni ne modifie rien dans Discord.
@@ -36,16 +37,17 @@ Discord croit alors que tu joues : pratique pour les quêtes « joue à X pendan
 | 🪟 **Faux jeux** | Petite carte avec l'icône du jeu et un chrono ; couleur, taille et coin de l'écran réglables |
 | ⚡ **Réglages en direct** | Langue, couleurs et apparence des faux jeux s'appliquent tout de suite, même aux faux jeux déjà ouverts |
 | 📱 **Appli téléphone** | Pilote l'outil PC depuis ton téléphone sur le même Wi-Fi : sessions, rotation, recherche de jeux, quêtes, minuterie, stats |
-| 🧩 **Confort** | Mini-widget toujours visible, zone de notification, lancement avec Windows (option), raccourci bureau, diagnostic, français / anglais, 6 couleurs d'accent |
+| 🩸 **Thème yandere** | Aubergine profond, rouge sang et sakura, titres en serif ; 6 couleurs d'accent (sang, sakura, cerise, lilas, menthe, or rose) appliquées partout, téléphone et faux jeux compris |
+| 🧩 **Confort** | Mini-widget toujours visible, zone de notification, lancement avec Windows (option), raccourci bureau, diagnostic, français / anglais |
 | 🪶 **Léger** | ~2 à 6 % d'un cœur et 60 à 130 Mo ; les faux jeux s'arrêtent avec l'outil, même en cas de plantage |
 
 <p align="center">
-  <img src="assets/quest.png" width="400" alt="Mode quête">
-  <img src="assets/stats.png" width="400" alt="Statistiques">
+  <img src="assets/quest-fr.png" width="400" alt="Mode quête">
+  <img src="assets/stats-fr.png" width="400" alt="Statistiques">
 </p>
 <p align="center">
-  <img src="assets/fake-game-cards.png" width="400" alt="Cartes des faux jeux">
-  <img src="assets/settings.png" width="400" alt="Réglages">
+  <img src="assets/fake-game-cards-fr.png" width="400" alt="Cartes des faux jeux">
+  <img src="assets/settings-fr.png" width="400" alt="Réglages">
 </p>
 
 ## Installation
@@ -86,7 +88,7 @@ régler la minuterie et voir tes stats, sans te lever.
 
 > **Ce n'est pas une appli à télécharger** (pas d'APK, pas de store). C'est une appli web servie **par ton PC**
 > sur ton réseau local : tu l'ouvres dans le navigateur du téléphone et tu peux l'ajouter à l'écran d'accueil.
-> Elle ne fonctionne que si Quest Spoofer tourne sur le PC.
+> Elle ne fonctionne que si Quest Farm tourne sur le PC.
 
 ### Connexion
 
@@ -126,7 +128,7 @@ La langue et la couleur d'accent suivent celles de l'appli PC.
   Ton réseau doit aussi être en profil **Privé** (Paramètres Windows → Réseau → Wi-Fi/Ethernet → Type de profil).
 - Désactive un éventuel **VPN** sur le téléphone ou le PC.
 - Si le PC a plusieurs cartes réseau, essaie l'autre adresse affichée sous la principale.
-- Le PC doit rester allumé avec Quest Spoofer et Discord ouverts (l'outil peut être réduit dans la zone de notification).
+- Le PC doit rester allumé avec Quest Farm et Discord ouverts (l'outil peut être réduit dans la zone de notification).
 
 ## Structure du projet
 

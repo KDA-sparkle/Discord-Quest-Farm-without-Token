@@ -6,14 +6,15 @@
 
 <p align="center">
   Discord presence simulator for Windows<br>
+  <sub><code>// you only play with me ♡</code></sub><br>
   <b>English</b> · <a href="README.fr.md">Français</a>
 </p>
 
 <p align="center">
-  <img src="assets/screenshot-en.png" width="820" alt="Quest Spoofer">
+  <img src="assets/screenshot-en.png" width="820" alt="Quest Farm">
 </p>
 
-Quest Spoofer starts **fake processes** named after game executables that Discord can detect.
+Quest Farm starts **fake processes** named after game executables that Discord can detect.
 Discord then thinks you are playing: handy for "play X for N minutes" quests.
 
 - **No token, no password**: the app never reads or changes anything inside Discord.
@@ -36,16 +37,17 @@ Discord then thinks you are playing: handy for "play X for N minutes" quests.
 | 🪟 **Fake games** | Small card with the game icon and a timer; color, size and screen corner are configurable |
 | ⚡ **Live settings** | Language, colors and fake game appearance apply instantly, even to fake games already running |
 | 📱 **Phone app** | Control the PC app from your phone on the same Wi-Fi: sessions, rotation, game search, quests, timer, stats |
-| 🧩 **Comfort** | Always-on-top mini widget, notification area, launch with Windows (optional), desktop shortcut, diagnostics, English / French, 6 accent colors |
+| 🩸 **Yandere theme** | Deep aubergine, blood red and sakura, serif titles; 6 accent colors (blood, sakura, cherry, lilac, mint, rose gold) applied everywhere, phone and fake games included |
+| 🧩 **Comfort** | Always-on-top mini widget, notification area, launch with Windows (optional), desktop shortcut, diagnostics, English / French |
 | 🪶 **Lightweight** | ~2–6% of one core and 60–130 MB; fake games stop with the app, even if it crashes |
 
 <p align="center">
-  <img src="assets/quest.png" width="400" alt="Quest mode">
-  <img src="assets/stats.png" width="400" alt="Stats">
+  <img src="assets/quest-en.png" width="400" alt="Quest mode">
+  <img src="assets/stats-en.png" width="400" alt="Stats">
 </p>
 <p align="center">
-  <img src="assets/fake-game-cards.png" width="400" alt="Fake game cards">
-  <img src="assets/settings.png" width="400" alt="Settings">
+  <img src="assets/fake-game-cards-en.png" width="400" alt="Fake game cards">
+  <img src="assets/settings-en.png" width="400" alt="Settings">
 </p>
 
 ## Installation
@@ -86,7 +88,7 @@ set the timer and check your stats, without getting up.
 
 > **There is nothing to download** (no APK, no store). It is a web app served **by your PC** on your local
 > network: you open it in your phone's browser and can add it to your home screen.
-> It only works while Quest Spoofer is running on the PC.
+> It only works while Quest Farm is running on the PC.
 
 ### Connecting
 
@@ -126,7 +128,7 @@ Language and accent color follow the PC app.
   Your network must also use the **Private** profile (Windows Settings → Network → Wi-Fi/Ethernet → Network profile type).
 - Turn off any **VPN** on the phone or the PC.
 - If the PC has several network adapters, try the other address shown under the main one.
-- The PC must stay on with Quest Spoofer and Discord open (the app can be minimized to the notification area).
+- The PC must stay on with Quest Farm and Discord open (the app can be minimized to the notification area).
 
 ## Project structure
 
