@@ -2,7 +2,7 @@
   <img src="assets/logo.png" width="96" alt="Quest Farm">
 </p>
 
-<h1 align="center">Quest Spoofer</h1>
+<h1 align="center">Quest Farm</h1>
 
 <p align="center">
   Simulateur de présence Discord pour Windows<br>
